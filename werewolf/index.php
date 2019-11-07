@@ -27,12 +27,13 @@ $games_stats = $games->get_stats();
 $games_in_fast_progress = $games->get_games_in_fast_progress();
 $games_in_standard_progress = $games->get_games_in_standard_progress();
 $games_recently_ended = $games->get_games_recently_ended();
-$games_in_fast_signup = $games->games_in_fast_signup();
-$games_in_standard_signup_as_swf = $games->games_in_standard_signup_as_swf();
-$games_in_standard_signup_as_date = $games->games_in_standard_signup_as_date();
+$games_in_fast_signup = $games->get_games_in_fast_signup();
+$games_in_standard_signup_as_swf = $games->get_games_in_standard_signup_as_swf();
+$games_in_standard_signup_as_date = $games->get_games_in_standard_signup_as_date();
 
 
 // RENDER VIEW
+$page_title = 'BGG Werewolf';
 require_once 'templates/shared/header.php'; 
 if ($show_funding_message) { 
     include_once 'templates/shared/_funding_message.php';

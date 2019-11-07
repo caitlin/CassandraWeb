@@ -65,21 +65,21 @@ class Games
         return $this->process_game_data($result);
     }
 
-    public function games_in_fast_signup() {
+    public function get_games_in_fast_signup() {
         $sql = "Select Games.id, Games.thread_id, Games.complex, Games.title, DATE_FORMAT(start_date, '%b-%d-%y %l:%i %p') as start, swf, TIME_FORMAT(day_length, '%H:%i') day_length, TIME_FORMAT(night_length, '%H:%i') night_length, GROUP_CONCAT(Users.name SEPARATOR ',') mods, (select count(*)from Players where Players.game_id = Games.id) num_players, Games.max_players from Games join Moderators on Games.id = Moderators.game_id join Users on Moderators.user_id = Users.id where status='Sign-up' and deadline_speed='Fast' and ( (swf='No' and (datediff(start_date, now()) <=500) and (datediff(now(), start_date) <=3)) or swf='Yes' or automod_id is not null ) group by Games.id order by swf, start_date asc";
         $result = mysql_query($sql);
 
         return $this->process_game_data($result);
     }
 
-    public function games_in_standard_signup_as_date() {
+    public function get_games_in_standard_signup_as_date() {
         $sql = "SELECT Games.id, Games.thread_id, Games.complex, Games.title, DATE_FORMAT(start_date, '%b-%d-%y') as start, swf, TIME_FORMAT(lynch_time, '%l:%i %p') lynch_time, TIME_FORMAT(na_deadline, '%l:%i %p') na_deadline, GROUP_CONCAT(Users.name SEPARATOR ',') mods, (select count(*)from Players where Players.game_id = Games.id) num_players, Games.max_players from Games join Moderators on Games.id = Moderators.game_id join Users on Moderators.user_id = Users.id where status='Sign-up' and deadline_speed='Standard' and ( ((datediff(start_date, now()) <=500) and (datediff(now(), start_date) <=3) and swf='No') or automod_id is not null ) and swf = 'No' group by Games.id order by start_date asc";
         $result = mysql_query($sql);
 
         return $this->process_game_data($result);
     }
 
-    public function games_in_standard_signup_as_swf() {
+    public function get_games_in_standard_signup_as_swf() {
         $sql = "Select id,  Games.thread_id, title, complex, (max_players - count(Players.user_id)) as players_needed,  (max_players - count(Players.user_id))=0 as players_needed_bin,  cast(format(((count(Players.user_id)/max_players)*100),0) as unsigned) as percent,  TIME_FORMAT(lynch_time, '%l:%i %p') lynch_time,  TIME_FORMAT(na_deadline, '%l:%i %p') na_deadline, (select GROUP_CONCAT(Users.name SEPARATOR ',') mods from Moderators join Users on Moderators.user_id = Users.id where Moderators.game_id = Games.id) mods, (select count(*)from Players where Players.game_id = Games.id) num_players, max_players from Games  LEFT JOIN Players on Games.id=Players.game_id  where `status`='Sign-up' and deadline_speed='Standard' and swf='Yes'  group by Games.id  order by players_needed_bin asc, players_needed asc, percent desc";
         $result = mysql_query($sql);
 

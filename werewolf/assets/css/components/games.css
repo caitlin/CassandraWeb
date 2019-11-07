@@ -15,3 +15,11 @@
 .games-index--section {
   margin-bottom: 15px;
 }
+
+
+.game-details {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-column-gap: 30px;
+  margin-bottom: 15px;
+}
