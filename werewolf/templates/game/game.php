@@ -124,10 +124,3 @@ if ( $edit )  {
         setHint()
         </script>
         <?php print player_autocomplete_js("new_p"); ?>
-
-    </body>
-</html>
-
-<?php
-require_once 'templates/shared/footer.php';
-?>

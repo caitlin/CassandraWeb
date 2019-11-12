@@ -1,5 +1,6 @@
 <?php
 
+require_once 'setup.php';
 include "php/accesscontrol.php";
 include_once "php/db.php";
 include_once "php/common.php";
@@ -126,4 +127,5 @@ $wolfy_awards = $gameObj->get_wolfy_awards();
 
 // RENDER VIEW
 require_once 'templates/game/game.php';
+require_once 'templates/shared/footer.php';
 ?>
