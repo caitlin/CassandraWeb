@@ -74,6 +74,48 @@ if ( $moderator || (($level == 1 || $level == 2)  && $status == 'Finished') ) {
 
 if ( $game['id'] == "" || $game['id'] == 0 )  {$game['title'] = "Invalid Game";}
 
+// Necessary functions (for ajax use in agent)
+function edit_dialog($user_id,$game_id,$original_id) {
+  $output = "<form>\n";
+  if ( $user_id == $original_id ) {
+    $table = "Players";
+    $field = "user_comment";
+    $id = "user_id";
+  } else {
+    $table = "Replacements";
+    $field = "rep_comment";
+    $id = "replace_id";
+  }
+  $sql = sprintf("select %s from %s where %s=%s and game_id=%s",$field,$table,$id,quote_smart($user_id),quote_smart($game_id));
+  $result = mysql_query($sql);
+  $comment = mysql_result($result,0,0);
+  $output .= "<textarea id='new_comment' name='new_comment' style='width:100%; height:80px;'>$comment</textarea><br />";
+  $output .= "<input type='button' name='submit' value='submit' onclick='submit_comment()' /> ";
+  $output .= "<input type='button' name='cancel' value='cancel' onclick='clear_edit()' />";
+  $output .= "</form>\n";
+
+  return $output;
+}
+
+function update_comment($user_id,$game_id,$original_id,$comment){
+  if ( $user_id == $original_id ) {
+    $table = "Players";
+    $field = "user_comment";
+    $id = "user_id";
+  } else {
+    $table = "Replacements";
+    $field = "rep_comment";
+    $id = "replace_id";
+  }
+  $comment = stripslashes($comment);
+  $comment = safe_html($comment);
+  $sql = sprintf("update %s set %s=%s where %s=%s and game_id=%s",$table,$field,quote_smart($comment),$id,quote_smart($user_id),quote_smart($game_id));
+  $result = mysql_query($sql);
+
+  return $comment;
+}
+
+
 // CONTROLLER
 require_once('src/Games/Game.php');
 $gameObj = new Game($game_thread_id);
