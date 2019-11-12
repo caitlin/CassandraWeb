@@ -86,7 +86,7 @@
             <div <?=$open_comment;?> onMouseOver='show_hint("Click to Change Deadlines")' onMouseOut='hide_hint()' onClick='edit_deadline()' <?=$close_comment;?>><b>Deadlines:</b></div>
         </td>
         <td id='deadline_td'>
-            <div <?=$open_comment;?> onMouseOver='show_hint(\"Click to Change Deadlines\")' onMouseOut='hide_hint()' onClick='edit_deadline()' <?=$close_comment;?>>
+            <div <?=$open_comment;?> onMouseOver='show_hint("Click to Change Deadlines")' onMouseOut='hide_hint()' onClick='edit_deadline()' <?=$close_comment;?>>
             <?php
             list($lynch,$lmin,$x) = split(":",$game['lynch_time']);
             list($night,$nmin,$x) = split(":",$game['na_deadline']);
@@ -130,10 +130,10 @@
     <?php if ( !$subthread) { ?>
         <tr>
             <td>
-                <div <?=$open_comment;?> onMouseOver='show_hint(\"Click to Change Complexity\")' onMouseOut='hide_hint()' onClick='edit_complex()' <?=$close_comment;?>><b>Complexity:</b></div>
+                <div <?=$open_comment;?> onMouseOver='show_hint("Click to Change Complexity")' onMouseOut='hide_hint()' onClick='edit_complex()' <?=$close_comment;?>><b>Complexity:</b></div>
             </td>
             <td id='td_complex'>
-                <div <?=$open_comment;?> onMouseOver='show_hint(\"Click to Change Complexity\")' onMouseOut='hide_hint()' onClick='edit_complex()' <?=$close_comment;?>><?php print show_complex($game['complex']); ?></div>
+                <div <?=$open_comment;?> onMouseOver='show_hint("Click to Change Complexity")' onMouseOut='hide_hint()' onClick='edit_complex()' <?=$close_comment;?>><?php print show_complex($game['complex']); ?></div>
             </td>
         </tr>
     <?php } ?>
@@ -144,10 +144,10 @@
     ?>
         <tr>
             <td>
-                <div  <?=$open_comment;?> onMouseOver='show_hint(\"Click to Change Winner\")' onMouseOut='hide_hint()' onClick='edit_winner()' <?=$close_comment;?>><b>Winner:</b></div>
+                <div  <?=$open_comment;?> onMouseOver='show_hint("Click to Change Winner")' onMouseOut='hide_hint()' onClick='edit_winner()' <?=$close_comment;?>><b>Winner:</b></div>
             </td>
             <td id='win_td'>
-                <div  <?=$open_comment;?> onMouseOver='show_hint(\"Click to Change Winner\")' onMouseOut='hide_hint()' onClick='edit_winner()' <?=$close_comment;?>><?= $game['winner'] ?></div>
+                <div  <?=$open_comment;?> onMouseOver='show_hint("Click to Change Winner")' onMouseOut='hide_hint()' onClick='edit_winner()' <?=$close_comment;?>><?= $game['winner'] ?></div>
             </td>
         </tr>
     <?php } ?>
@@ -170,7 +170,7 @@
         ?>
             <tr>
                 <td>
-                    <div <?=$open_comment;?> onMouseOver='show_hint(\"Click to Add or Delete a Sub-Thread\")' onMouseOut='hide_hint()' onClick='edit_subt()' <?=$close_comment;?>><b>Sub-Threads:</b></div>
+                    <div <?=$open_comment;?> onMouseOver='show_hint("Click to Add or Delete a Sub-Thread")' onMouseOut='hide_hint()' onClick='edit_subt()' <?=$close_comment;?>><b>Sub-Threads:</b></div>
                 </td>
                 <td id='subt_td'><?php show_subt($game['id']) ?></td>
             </tr>

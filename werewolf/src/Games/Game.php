@@ -54,6 +54,22 @@ class Game
 
         return $players;
     }
+
+    public function get_wolfy_awards() {
+        $sql = sprintf("select * from Wolfy_games, Wolfy_awards where Wolfy_games.award_id=Wolfy_awards.id and game_id=%s order by id, year", $this->id());
+        $result = mysql_query($sql);
+
+        $awards = [];
+        while ( $award_data = mysql_fetch_array($result) ) {
+            $awards[] = [
+                'award_post' => $award_data['award_post'],
+                'award' => $award_data['award'],
+                'year' => $award_data['year']
+            ];
+        }
+
+        return $awards;
+    }
   
 
     // -------------------------------------------------------------------------
@@ -61,10 +77,10 @@ class Game
     // -------------------------------------------------------------------------
 
     private function find_by_id($game_thread_id) {
-      $sql = "Select * from Games where thread_id=$game_thread_id";
-      $result = mysql_query($sql);
-      $game = mysql_fetch_array($result);
-      return $game;
+        $sql = "Select * from Games where thread_id=$game_thread_id";
+        $result = mysql_query($sql);
+        $game = mysql_fetch_array($result);
+        return $game;
     }
 
     private function get_post_count_for_player($player_id) {
