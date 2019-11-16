@@ -33,8 +33,14 @@ If page does not re-direct <a href='/wotw.php'>click here</a>.
 exit;
 }
 
-print page_header("Add Wolf of the Week");
 ?>
+<html><head>
+<title>Add Wolf of the Week</title>
+<link rel='stylesheet' type='text/css' href='/assets/css/application.css'>
+</head>
+<body>
+<?php display_menu(); ?>
+<div style='padding:10px;'>
 <h1>Add Wolf of the Week</h1>
 <form method='post' action='<?=$_SERVER['PHP_SELF']?>'>
 <table class='forum_table'>

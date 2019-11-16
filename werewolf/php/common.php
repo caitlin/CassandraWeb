@@ -390,18 +390,4 @@ function safe_html($text,$tags='') {
 
   return $safe_text;
 }
-
-function page_header($title,$extra="") {
-  $output  = "<html><head>\n";
-  $output .= "<title>$title</title>\n";
-  $output .= "<link rel='stylesheet' type='text/css' href='/assets/css/application.css'>\n";
-  $output .= $extra;
-  $output .= "</head>\n";
-  $output .= "<body>\n";
-  $output .= display_menu();
-  $output .= "<div style='padding:10px;'>\n";
-
-  return $output;
-}
-
 ?>
