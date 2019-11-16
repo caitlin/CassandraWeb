@@ -1,7 +1,7 @@
     </div> <!-- end .content -->
   </div> <!-- end .content-wrap -->
    <!-- <img src='games_started_graph.php'> -->
-    <footer>
+    <footer class="site-footer">
       <div class="cassy-links">
         <div class="cassy-links-section">
           <h3>Cassandra</h3>
