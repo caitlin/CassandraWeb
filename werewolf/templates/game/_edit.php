@@ -142,14 +142,28 @@ function in_array(mystring,myarray) {
 
   }
 ?>
-<div id='edit_table'>
-<table class='forum_table' width='100%'>
-<tr><th> 
-Edit 
-<img id='busy' style='visibility:hidden' src='/assets/images/ajax_busy.gif' />
-</th></tr>
-<tr><td align='center'><div id='edit_space'><?php clear_editSpace(); ?></div></td></tr>
-</table></div>
+<div class="modal micromodal-slide" id="modal-edit-game" aria-hidden="true">
+  <div class="modal__overlay" tabindex="-1" data-micromodal-close>
+    <div class="modal__container" role="dialog" aria-modal="true" aria-labelledby="modal-edit-game-title">
+      <header class="modal__header">
+        <h2 class="modal__title" id="modal-edit-game-title">
+          Edit
+        </h2>
+        <button class="modal__close" aria-label="Close modal" data-micromodal-close></button>
+      </header>
+      <main class="modal__content" id="modal-edit-game-content">
+
+        <img id='busy' style='visibility:hidden' src='/assets/images/ajax_busy.gif' />
+        <div id='edit_space'><?php clear_editSpace(); ?></div>
+
+      </main>
+      <footer class="modal__footer">
+        <button class="modal__btn modal__btn-primary">Continue</button>
+        <button class="modal__btn" data-micromodal-close aria-label="Close this dialog window">Close</button>
+      </footer>
+    </div>
+  </div>
+</div>
 <?php
 }
 # Create a place for the Player to make their own comments about the game.

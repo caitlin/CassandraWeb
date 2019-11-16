@@ -57,6 +57,7 @@ if ( $edit )  {
 }
 ?>
 <script src='/assets/js/ajax.js'></script>
+<script src='https://unpkg.com/micromodal/dist/micromodal.min.js' />
 </head>
 <body>
     <?php display_menu(); ?>
