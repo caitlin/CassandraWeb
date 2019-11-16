@@ -404,14 +404,6 @@ function page_header($title,$extra="") {
   return $output;
 }
 
-function page_footer($extra="") {
-  $output = "</div>\n";
-  $output .= $extra;
-  $output .= "</body></html>\n";
-
-  return $output;
-}
-
 function run_asynch($path) {
     $WshShell = new COM("WScript.Shell");
     $oExec = $WshShell->Run(addslashes($path), 7, false);

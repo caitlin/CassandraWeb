@@ -45,6 +45,6 @@ print page_header("Add Wolf of the Week");
 <tr><td colspan='2'><input type='submit' value='submit' name='submit' /></td></tr>
 </table>
 </form>
-<?php
-print page_footer();
-?>
+</div>
+</body>
+</html>
