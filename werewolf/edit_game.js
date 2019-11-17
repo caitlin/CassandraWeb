@@ -150,13 +150,13 @@ function edit_deadline() {
 }
 
 function submit_deadline() {
-    lynch = document.new_deadline.lynch.value
-    night = document.new_deadline.night.value
+    dusk = document.new_deadline.dusk.value
+    dawn = document.new_deadline.dawn.value
     day_length = document.new_deadline.day_length.value
     night_length = document.new_deadline.night_length.value
 
     send_submit_request(
-        "/edit_game.php?q=s_deadline&lynch="+lynch+"&night="+night+"&day_length="+day_length+"&night_length="+night_length+"&game_id="+game_id,
+        "/edit_game.php?q=s_deadline&dusk="+dusk+"&dawn="+dawn+"&day_length="+day_length+"&night_length="+night_length+"&game_id="+game_id,
         "deadline_td"
     )
 } 

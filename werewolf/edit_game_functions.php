@@ -139,38 +139,6 @@ function edit_speed($game_id) {
   print $output;
 }
 
-function edit_deadline($game_id) {
-  $output = "<form name='new_deadline'>\n";
-  $sql=sprintf("select lynch_time, na_deadline, day_length, night_length, deadline_speed from Games where id=%s",quote_smart($game_id));
-  $result = mysql_query($sql);
-  #$lynch_db = mysql_result($result,0,0);
-  #$night_db = mysql_result($result,0,1);
-  $lynch = mysql_result($result,0,0);
-  $night = mysql_result($result,0,1);
-  $day_length = mysql_result($result,0,2);
-  $night_length = mysql_result($result,0,3);
-  $speed = mysql_result($result,0,4);
-  #list($lynch,$lmin) = split(":",$lynch_db);
-  #list($night,$nmin) = split(":",$night_db);
-  $output .= "<table>\n";
-  if ( $speed == "Standard" ) {
-    $output .= "<tr><td>Lynch:</td><td>".time_dropdown('lynch',$lynch,false,false)."</td></tr>\n";
-    $output .= "<tr><td>Night Action:</td><td>".time_dropdown('night',$night,false,false)."</td></tr>\n";
-    $output .= "<input type='hidden' name='day_length' value='$day_length' />\n";
-    $output .= "<input type='hidden' name='night_length' value='$night_length' />\n";
-  } else {
-    $output .= "<tr><td>Day Length:</td><td>".time_dropdown('day_length',$day_length,true,false)."</td></tr>\n";
-    $output .= "<tr><td>Night Length:</td><td>".time_dropdown('night_length',$night_length,true,false)."</td></tr>\n";
-    $output .= "<input type='hidden' name='lynch' value='$lynch' />\n";
-    $output .= "<input type='hidden' name='night' value='$night' />\n";
-  }
-  $output .= "<tr><td colspan='2' align='center'><input type='button' name='submit' value='submit' onClick='submit_deadline()' /></td></tr>\n";
-  $output .= "</table>\n";
-  $output .= "</form>\n";
-  
-  print $output;
-}
-
 function edit_winner($game_id) {
   $output = "<form name='new_winner'>\n";
   $output .= "<select name='winner'>\n";

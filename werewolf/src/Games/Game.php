@@ -43,11 +43,11 @@ class Game
             foreach(explode("','",substr($row[1],6,-2)) as $v) {
                 $options[] = $v;
             }
-    }
+        }
 
         return $options;
     }
-    
+
     // -------------------------------------------------------------------------
     // Public functions
     // -------------------------------------------------------------------------
@@ -86,6 +86,26 @@ class Game
         }
     }
 
+    // Deadline info has 5 parts: dusk, dawn, day, night, speed
+    public function get_deadlines() {
+        $sql = sprintf("select lynch_time, na_deadline, day_length, night_length, deadline_speed from Games where id=%s",quote_smart($this->id));
+        $result = mysql_query($sql);
+
+        $dusk = mysql_result($result,0,0);
+        $dawn = mysql_result($result,0,1);
+        $day_length = mysql_result($result,0,2);
+        $night_length = mysql_result($result,0,3);
+        $speed = mysql_result($result,0,4);
+
+        return [
+            'dusk' => $dusk,
+            'dawn' => $da,
+            'day_length' => $day_length,
+            'night_length' => $night_length,
+            'speed' => $speed
+        ];
+    }
+
     // Setters
 
     public function set_description($description) {
@@ -105,6 +125,23 @@ class Game
     public function set_speed($speed) {
         $sql = sprintf("update Games set deadline_speed=%s where id=%s",quote_smart($speed),quote_smart($this->id));
 
+        return mysql_query($sql);
+    }
+
+    public function set_deadlines($dusk, $dawn, $day_length, $night_length) {
+        if ( $dusk == "" ) {
+            $dusk_value = 'null';
+        } else {
+            $dusk_value = quote_smart($dusk);
+        }
+        if ( $dawn == "" ) {
+            $dawn_value = 'null';
+        } else {
+            $dawn_value = quote_smart($dawn);
+        }
+        
+        $sql = sprintf("UPDATE Games SET `lynch_time`=%s, `na_deadline`=%s, `day_length`=%s, `night_length`=%s WHERE id=%s",$dusk_value,$dawn_value,quote_smart($day_length),quote_smart($night_length),quote_smart($this->id));
+        
         return mysql_query($sql);
     }
 
@@ -196,6 +233,6 @@ class Game
         
         return mysql_result($result,0,0);
     }
-
+    
 }
 ?>

@@ -94,10 +94,10 @@
             list($night_length,$nlmin,$x) = split(":",$game['night_length']);
             if ( $game['deadline_speed'] == "Standard" ) {
                 if ( $lynch != "" ) {
-                    print "Lynch: ".time_24($lynch,$lmin)." BGG<br />";
+                    print "Dawn: ".time_24($lynch,$lmin)." BGG<br />";
                 }
                 if ( $night != "" ) {
-                    print "Night Action: ".time_24($night,$nmin)." BGG";
+                    print "Dusk: ".time_24($night,$nmin)." BGG";
                 }
             } else {
                 print "Day Length: $day_length:$dlmin <br />\n";
