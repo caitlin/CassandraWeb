@@ -10,6 +10,11 @@ include_once "php/bgg.php";
 include_once "php/common.php";
 require_once('src/Games/Game.php');
 
+function render_view($file, $vars = []) {
+  extract($vars);
+  include dirname(__FILE__) . '/' . $file . '.php';
+}
+
 $cache = init_cache();
 
 if ( ! isset($_REQUEST['q']) ) {
@@ -105,18 +110,27 @@ case 's_moderator':
     show_dates($game_id);
   break;
 
-# Repace text with from to edit description.
+    // ---------------------------------
+    // Description
+    // ---------------------------------
+
+    // Replace text with from to edit description.
   case 'e_description':
-    print "Edit the game description.  To format your text you must use html.<br /><br />";
-    edit_description($game_id);
+        $description = $game->get_description();
+        
+        render_view('templates/game/edit_description', [
+            'instructions' => "Edit the game description.  To format your text you must use html.",
+            'description' => $description
+        ]);
   break;
 
-# Edit database with new Description return text to original.
+    // Edit database with new Description return text to original.
   case 's_description':
-    $_REQUEST['desc'] = safe_html($_REQUEST['desc'],"<a>");
-    $sql = sprintf("update Games set description=%s where id=%s",quote_smart($_REQUEST['desc']),quote_smart($game_id));
-	$result = mysql_query($sql);
-	print "<div onMouseOver='show_hint(\"Click to change Description\")' onMouseOut='hide_hint()' onclick='edit_desc()' >".stripslashes($_REQUEST['desc'])."</div>";
+        $description = $game->set_description($_REQUEST['desc']);
+
+        render_view('templates/game/show_description', [
+            'description' => stripslashes($description)
+        ]);
   break;
 
 # Replace text with form to change Status.

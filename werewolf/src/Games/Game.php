@@ -32,8 +32,25 @@ class Game
     // Public functions
     // -------------------------------------------------------------------------
     
-    public function id() {
-        return $this->game['id'];
+    // Getters
+
+    public function get_description() {
+        $sql = sprintf("select description from Games where id=%s",quote_smart($this->id));
+        $result = mysql_query($sql);
+
+        if ( $result ) { 
+            return mysql_result($result,0,0); 
+        }
+    }
+
+    // Setters
+
+    public function set_description($description) {
+        $new_description = safe_html($description,"<a>");
+        $sql = sprintf("update Games set description=%s where id=%s",quote_smart($new_description),quote_smart($this->id));
+        $result = mysql_query($sql);
+
+        return $new_description; 
     }
 
     public function get_latest_post_id() {

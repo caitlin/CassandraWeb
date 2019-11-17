@@ -1,0 +1,1 @@
+<div onMouseOver='show_hint(\"Click to change Description\")' onMouseOut='hide_hint()' onclick='edit_desc()' ><?php echo $description . $description2 ?></div>

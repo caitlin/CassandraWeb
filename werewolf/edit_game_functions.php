@@ -117,17 +117,6 @@ function edit_dates($game_id) {
   print $output;
 }
 
-function edit_description($game_id) {
-  $output = "<form name='new_descrip'>\n";
-  $sql = sprintf("select description from Games where id=%s",quote_smart($game_id));
-  $result = mysql_query($sql);
-  $description = mysql_result($result,0,0);
-  $output .= "<textarea name='desc' rows='5' cols='50'>$description</textarea>\n";
-  $output .= "<br /><input type='button' name='submit' value='submit' onClick='submit_desc()' />\n";
-  $output .= "</form>\n";
-
-  print $output;
-}
 
 function edit_status($game_id) {
   $output = "<form name='new_status'>\n";
