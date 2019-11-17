@@ -190,22 +190,43 @@ case 's_moderator':
         ]);
   break;
 
-# Replace text with form to change speed.
+    // ---------------------------------
+    // Speed
+    // ---------------------------------
+
+    // Replace text with form to change speed.
   case 'e_speed':
-    print "Change the speed of the game.<br /><br />";
-    edit_speed($game_id);
+        $instructions = "Change the speed of the game.";
+
+        $speed = $game->get_deadline_speed();
+        $speedOptions = Game::field_options_for('deadline_speed');
+       
+        render_view('templates/game/edit_speed', [
+            'instructions' => $instructions,
+            'speedOptions' => $speedOptions,
+            'game' => [
+                'speed' => $speed
+            ]
+        ]);
   break;
 
-# Edit database with new Speed, return text to original.
+    // Edit database with new Speed, return text to original.
   case 's_speed':
-    $sql = sprintf("update Games set deadline_speed=%s where id=%s",quote_smart($_REQUEST['speed']),quote_smart($game_id));
-    $result = mysql_query($sql);
-    print "<div onMouseOver='show_hint(\"Click to Change Speed\")' onMouseOut='hide_hint()' onClick='edit_speed()'>".$_REQUEST['speed']."</div>";
+    $speed = $_REQUEST['speed'];
+
+    $game->set_speed($speed);
+
 	$cache->remove('games-in-progress-fast-list', 'front');
 	$cache->remove('games-in-progress-list', 'front');
 	$cache->remove('games-signup-fast-list', 'front');
 	$cache->remove('games-signup-swf-list', 'front');
 	$cache->remove('games-signup-list', 'front');
+
+    render_view('templates/game/show_speed', [
+        'game' => [
+            'speed' => $speed
+        ]
+    ]);
   break;
 
 # Replace text with form to change deadlines.

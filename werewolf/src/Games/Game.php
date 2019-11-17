@@ -4,7 +4,7 @@ class Game
     // -------------------------------------------------------------------------
     // Setup
     // -------------------------------------------------------------------------
-    const ALLOWED_FIELDS_FOR_OPTIONS = ['status', 'phase'];
+    const ALLOWED_FIELDS_FOR_OPTIONS = ['status', 'phase', 'deadline_speed'];
 
     public $id;
     private $thread_id;
@@ -54,6 +54,15 @@ class Game
     
     // Getters
 
+    public function get_deadline_speed() {
+        $sql=sprintf("select deadline_speed from Games where id=%s",quote_smart($this->id));
+        $result = mysql_query($sql);
+
+        if ( $result ) { 
+            return mysql_result($result,0,0); 
+        }
+    }
+
     public function get_description() {
         $sql = sprintf("select description from Games where id=%s",quote_smart($this->id));
         $result = mysql_query($sql);
@@ -90,7 +99,11 @@ class Game
     public function set_full_status($status, $phase, $day) {
         $sql = sprintf("update Games set `status`=%s, phase=%s, day=%s where id=%s",quote_smart($status),quote_smart($phase),quote_smart($day),quote_smart($this->id));
         
-        return  mysql_query($sql);
+
+    public function set_speed($speed) {
+        $sql = sprintf("update Games set deadline_speed=%s where id=%s",quote_smart($speed),quote_smart($this->id));
+
+        return mysql_query($sql);
     }
 
     // Queries

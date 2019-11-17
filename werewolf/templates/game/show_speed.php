@@ -1,0 +1,1 @@
+<div onMouseOver='show_hint(\"Click to Change Speed\")' onMouseOut='hide_hint()' onClick='edit_speed()'><?php echo $game['speed'] ?></div>
