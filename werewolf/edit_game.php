@@ -133,17 +133,36 @@ case 's_moderator':
         ]);
   break;
 
-# Replace text with form to change Status.
+    // ---------------------------------
+    // Status
+    // ---------------------------------
+
+    // Replace text with form to change Status.
   case 'e_status':
-    print "Change the status of the game.  In-Progress means that the players can only see their own roles, and that nobody can see any of the comments below.  Once you set the game to 'Finished' then everyone will be able to see everything.  When you set a game to 'Finished' please don't forget to set the winner.  If you are using the Automatied vote tally system there should be no need to manually change the period or number.<br /><br />";
-    edit_status($game_id);
+        $instructions = "Change the status of the game.  In-Progress means that the players can only see their own roles, and that nobody can see any of the comments below.  Once you set the game to 'Finished' then everyone will be able to see everything.  When you set a game to 'Finished' please don't forget to set the winner.  If you are using the Automatied vote tally system there should be no need to manually change the period or number.";
+ 
+        $full_status = $game->get_full_status();
+        $statusOptions = Game::field_options_for('status');
+        $phaseOptions = Game::field_options_for('phase');
+
+        render_view('templates/game/edit_status', [
+            'instructions' => $instructions,
+            'description' => $description,
+            'statusOptions' => $statusOptions,
+            'phaseOptions' => $phaseOptions,
+            'game' => $full_status
+        ]);
   break;
 
-# Edit database with new Status return text to original.
+    // Edit database with new Status return text to original.
   case 's_status':
-    $sql = sprintf("update Games set `status`=%s, phase=%s, day=%s where id=%s",quote_smart($_REQUEST['status']),quote_smart($_REQUEST['phase']),quote_smart($_REQUEST['day']),quote_smart($game_id));
-	$result = mysql_query($sql);
-	if($_REQUEST['status'] == 'In Progress') {
+        $status = $_REQUEST['status'];
+        $phase = $_REQUEST['phase'];
+        $day = $_REQUEST['day'];
+
+        $game->set_full_status($status, $phase, $day);
+    
+        if($status == 'In Progress') {
 		$cache->remove('total-games', 'front');
 		$cache->remove('games-in-progress-fast-list', 'front');
 		$cache->remove('games-in-progress-list', 'front');
@@ -154,16 +173,21 @@ case 's_moderator':
 		$cache->clean('front-signup-' . $game_id);
 		$cache->clean('front-signup-swf-' . $game_id);
 		$cache->clean('front-signup-fast-' . $game_id);
-	} elseif($_REQUEST['status'] == 'Finished') {
+        } elseif($status == 'Finished') {
 		$cache->remove('current-games', 'front');
 		$cache->remove('games-in-progress-fast-list', 'front');
 		$cache->remove('games-in-progress-list', 'front');
 		$cache->remove('games-ended-list', 'front');
-        $sql = sprintf("delete from Physics_processing where game_id=%s",quote_smart($game_id));
-        mysql_query($sql);
+            $game->remove_from_physics_processing();
 	}
 
-	print "<div onMouseOver='show_hint(\"Click to Change Status\")' onMouseOut='hide_hint()' onClick='edit_status()'>".$_REQUEST['status']." - ".$_REQUEST['phase']." ".$_REQUEST['day']."</div>";
+        render_view('templates/game/show_status', [
+            'game' => [
+                'status' => $status,
+                'phase' => $phase,
+                'day' => $day
+            ]
+        ]);
   break;
 
 # Replace text with form to change speed.

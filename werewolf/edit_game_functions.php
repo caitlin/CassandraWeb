@@ -117,44 +117,6 @@ function edit_dates($game_id) {
   print $output;
 }
 
-
-function edit_status($game_id) {
-  $output = "<form name='new_status'>\n";
-  $output .= "<select name='status'>\n";
-  $sql=sprintf("select status, phase, day from Games where id=%s",quote_smart($game_id));
-  $result = mysql_query($sql);
-  $status = mysql_result($result,0,0);
-  $phase = mysql_result($result,0,1);
-  $day = mysql_result($result,0,2);
-  $sql="show columns from Games where field='status'";
-  $result=mysql_query($sql);
-  while ($row=mysql_fetch_row($result)) {
-    foreach(explode("','",substr($row[1],6,-2)) as $v) {
-      $selected = "";
-	  if ( $status == $v ) { $selected = "selected"; }
-	  $output .= "<option $selected value='$v'>$v</option>";
-	  if ( $status == $v ) { break; }
-	}
-  }
-  $output .= "</select><br />\n";
-  $output .= "<select name='phase'>\n";
-  $sql="show columns from Games where field='phase'";
-  $result=mysql_query($sql);
-  while ($row=mysql_fetch_row($result)) {
-    foreach(explode("','",substr($row[1],6,-2)) as $v) {
-      $selected = "";
-	  if ( $phase == $v ) { $selected = "selected"; }
-	  $output .= "<option $selected value='$v'>$v</option>";
-	}
-  }
-  $output .= "</select>\n";
-  $output .= "<input type='text' size='2' name='day' value='$day' />\n";
-  $output .= "<input type='button' name='submit' value='submit' onClick='submit_status()' />\n";
-  $output .= "</form>\n";
-
-  print $output;
-}
-
 function edit_speed($game_id) {
   $output = "<form name='new_speed'>\n";
   $output .= "<select name='speed'>\n";

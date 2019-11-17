@@ -4,6 +4,7 @@ class Game
     // -------------------------------------------------------------------------
     // Setup
     // -------------------------------------------------------------------------
+    const ALLOWED_FIELDS_FOR_OPTIONS = ['status', 'phase'];
 
     public $id;
     private $thread_id;
@@ -23,10 +24,29 @@ class Game
         return $game;
     }
 
-    public function __construct($game_id) {
-      $this->game = $this->find_by_id($game_id);
+    // -------------------------------------------------------------------------
+    // Public static functions
+    // -------------------------------------------------------------------------
+    
+    // This method gets possible values for a specific field
+    // in the Games database
+    // It only accepts a from a certain set of fields 
+    public static function field_options_for($field) {
+        if (!in_array($field, self::ALLOWED_FIELDS_FOR_OPTIONS)) {
+            throw new Exception('Invalid field provided to Game::field_options_for');
+        }
+
+        $sql="show columns from Games where field='$field'";
+        $result=mysql_query($sql);
+        $options = [];
+        while ($row=mysql_fetch_row($result)) {
+            foreach(explode("','",substr($row[1],6,-2)) as $v) {
+                $options[] = $v;
+            }
     }
 
+        return $options;
+    }
     
     // -------------------------------------------------------------------------
     // Public functions
@@ -43,6 +63,20 @@ class Game
         }
     }
 
+    // Status has three parts: status, phase, day
+    public function get_full_status() {
+        $sql=sprintf("select status, phase, day from Games where id=%s",quote_smart($this->id));
+        $result = mysql_query($sql);
+
+        if ( $result ) { 
+            return [
+                'status' => mysql_result($result,0,0),
+                'phase' => mysql_result($result,0,1),
+                'day' => mysql_result($result,0,2)
+            ];
+        }
+    }
+
     // Setters
 
     public function set_description($description) {
@@ -52,6 +86,14 @@ class Game
 
         return $new_description; 
     }
+
+    public function set_full_status($status, $phase, $day) {
+        $sql = sprintf("update Games set `status`=%s, phase=%s, day=%s where id=%s",quote_smart($status),quote_smart($phase),quote_smart($day),quote_smart($this->id));
+        
+        return  mysql_query($sql);
+    }
+
+    // Queries
 
     public function get_latest_post_id() {
         $sql = sprintf("select max(article_id) as a_id from Posts where game_id=%s",$this->id);
@@ -104,6 +146,16 @@ class Game
         return $awards;
     }
   
+
+    // Other functions
+
+    public function remove_from_physics_processing() {
+        $sql = sprintf("DELETE FROM Physics_processing 
+                        WHERE game_id=%s", quote_smart($this->id));
+        $result = mysql_query($sql);
+
+        return $result;
+    }
 
     // -------------------------------------------------------------------------
     // Protected functions
