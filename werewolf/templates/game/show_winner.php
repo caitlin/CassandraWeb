@@ -1,0 +1,1 @@
+<div onMouseOver='show_hint(\"Click to Change Winner\")' onMouseOut='hide_hint()' onClick='edit_winner()'><?php echo $game['winner'] ?></div>

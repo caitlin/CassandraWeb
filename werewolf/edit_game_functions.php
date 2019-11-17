@@ -139,28 +139,6 @@ function edit_speed($game_id) {
   print $output;
 }
 
-function edit_winner($game_id) {
-  $output = "<form name='new_winner'>\n";
-  $output .= "<select name='winner'>\n";
-  $sql=sprintf("select winner from Games where id=%s",quote_smart($game_id));
-  $result = mysql_query($sql);
-  $winner = mysql_result($result,0,0);
-  $sql="show columns from Games where field='winner'";
-  $result=mysql_query($sql);
-  while ($row=mysql_fetch_row($result)) {
-    foreach(explode("','",substr($row[1],6,-2)) as $v) {
-      $selected = "";
-	  if ( $winner == $v ) { $selected = "selected"; }
-	  $output .= "<option $selected value='$v'>$v</option>";
-	}
-  }
-  $output .= "</select>\n";
-  $output .= "<input type='button' name='submit' value='submit' onClick='submit_winner()' />\n";
-  $output .= "</form>\n";
-
-  print $output;
-}
-
 function edit_subt($game_id) {
   $sql = sprintf("select * from Games where parent_game_id=%s",quote_smart($game_id));
   $result = mysql_query($sql);

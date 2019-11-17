@@ -286,22 +286,38 @@ break;
         ]);
     break;
 
-# Replace text with form to change Winner
-case 'e_winner':
-print "Change the winner of the game.  If an evil team one select evil.  If the good team won, select good,  If the game was neither good vs evil or had an individual winner then choose 'other'.<br /><br />";
-edit_winner($game_id);
-break;
+    // Replace text with form to change Winner
+    case 'e_winner':
+        $instructions = "Change the winner of the game.  If an evil team one select evil.  If the good team won, select good,  If the game was neither good vs evil or had an individual winner then choose 'other'.";
 
-# Edit database with new Winner return text to original.
-case 's_winner':
-$sql = sprintf("update Games set winner=%s where id=%s",quote_smart($_REQUEST['winner']),quote_smart($game_id));
-$result = mysql_query($sql);
-$cache->remove('evil-games', 'front');
-$cache->remove('good-games', 'front');
-$cache->remove('other-games', 'front');
+        $winner = $game->get_winner();
+        $winnerOptions = Game::WINNERS;
 
-print "<div onMouseOver='show_hint(\"Click to Change Winner\")' onMouseOut='hide_hint()' onClick='edit_winner()'>".$_REQUEST['winner']."</div>";
-break;
+        render_view('templates/game/edit_winner', [
+            'instructions' => $instructions,
+            'winnerOptions' => $winnerOptions,
+            'game' => [
+                'winner' => $winner
+            ]
+        ]);
+    break;
+
+    // Edit database with new Winner return text to original.
+    case 's_winner':
+        $winner = $_REQUEST['winner'];
+        
+        $game->set_winner($winner);
+        
+        $cache->remove('evil-games', 'front');
+        $cache->remove('good-games', 'front');
+        $cache->remove('other-games', 'front');
+
+        render_view('templates/game/show_winner', [
+            'game' => [
+                'winner' => $winner
+            ]
+        ]);
+    break;
 
 # Replace text with form to add or delete sub-threads.
 case 'e_subthread':

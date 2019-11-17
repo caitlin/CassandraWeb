@@ -5,6 +5,7 @@ class Game
     // Setup
     // -------------------------------------------------------------------------
     const ALLOWED_FIELDS_FOR_OPTIONS = ['status', 'phase', 'deadline_speed'];
+    const WINNERS = ['Evil','Good','Other'];
 
     public $id;
     private $thread_id;
@@ -106,6 +107,15 @@ class Game
         ];
     }
 
+    public function get_winner () {
+        $sql=sprintf("select winner from Games where id=%s",quote_smart($this->id));
+        $result = mysql_query($sql);
+
+        if ( $result ) { 
+            return mysql_result($result,0,0); 
+        }
+    }
+
     // Setters
 
     public function set_description($description) {
@@ -142,6 +152,12 @@ class Game
         
         $sql = sprintf("UPDATE Games SET `lynch_time`=%s, `na_deadline`=%s, `day_length`=%s, `night_length`=%s WHERE id=%s",$dusk_value,$dawn_value,quote_smart($day_length),quote_smart($night_length),quote_smart($this->id));
         
+        return mysql_query($sql);
+    }
+
+    public function set_winner($winner) {
+        $sql = sprintf("update Games set winner=%s where id=%s",quote_smart($winner),quote_smart($this->id));
+
         return mysql_query($sql);
     }
 
