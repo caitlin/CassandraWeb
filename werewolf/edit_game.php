@@ -115,30 +115,32 @@ case 's_moderator':
     // ---------------------------------
 
     // Replace text with from to edit description.
-  case 'e_description':
+    case 'e_description':
         $description = $game->get_description();
         
         render_view('templates/game/edit_description', [
             'instructions' => "Edit the game description.  To format your text you must use html.",
             'description' => $description
         ]);
-  break;
+    break;
 
     // Edit database with new Description return text to original.
-  case 's_description':
-        $description = $game->set_description($_REQUEST['desc']);
+    case 's_description':
+        $description = $_REQUEST['desc'];
+
+        $game->set_description($description);
 
         render_view('templates/game/show_description', [
             'description' => stripslashes($description)
         ]);
-  break;
+    break;
 
     // ---------------------------------
     // Status
     // ---------------------------------
 
     // Replace text with form to change Status.
-  case 'e_status':
+    case 'e_status':
         $instructions = "Change the status of the game.  In-Progress means that the players can only see their own roles, and that nobody can see any of the comments below.  Once you set the game to 'Finished' then everyone will be able to see everything.  When you set a game to 'Finished' please don't forget to set the winner.  If you are using the Automatied vote tally system there should be no need to manually change the period or number.";
  
         $full_status = $game->get_full_status();
@@ -152,10 +154,10 @@ case 's_moderator':
             'phaseOptions' => $phaseOptions,
             'game' => $full_status
         ]);
-  break;
+    break;
 
     // Edit database with new Status return text to original.
-  case 's_status':
+    case 's_status':
         $status = $_REQUEST['status'];
         $phase = $_REQUEST['phase'];
         $day = $_REQUEST['day'];
@@ -163,23 +165,23 @@ case 's_moderator':
         $game->set_full_status($status, $phase, $day);
     
         if($status == 'In Progress') {
-		$cache->remove('total-games', 'front');
-		$cache->remove('games-in-progress-fast-list', 'front');
-		$cache->remove('games-in-progress-list', 'front');
-		$cache->remove('current-games', 'front');
-		$cache->remove('games-signup-fast-list', 'front');
-		$cache->remove('games-signup-swf-list', 'front');
-		$cache->remove('games-signup-list', 'front');
-		$cache->clean('front-signup-' . $game_id);
-		$cache->clean('front-signup-swf-' . $game_id);
-		$cache->clean('front-signup-fast-' . $game_id);
-        } elseif($status == 'Finished') {
-		$cache->remove('current-games', 'front');
-		$cache->remove('games-in-progress-fast-list', 'front');
-		$cache->remove('games-in-progress-list', 'front');
-		$cache->remove('games-ended-list', 'front');
+            $cache->remove('total-games', 'front');
+            $cache->remove('games-in-progress-fast-list', 'front');
+            $cache->remove('games-in-progress-list', 'front');
+            $cache->remove('current-games', 'front');
+            $cache->remove('games-signup-fast-list', 'front');
+            $cache->remove('games-signup-swf-list', 'front');
+            $cache->remove('games-signup-list', 'front');
+            $cache->clean('front-signup-' . $game_id);
+            $cache->clean('front-signup-swf-' . $game_id);
+            $cache->clean('front-signup-fast-' . $game_id);
+            } elseif($status == 'Finished') {
+            $cache->remove('current-games', 'front');
+            $cache->remove('games-in-progress-fast-list', 'front');
+            $cache->remove('games-in-progress-list', 'front');
+            $cache->remove('games-ended-list', 'front');
             $game->remove_from_physics_processing();
-	}
+        }
 
         render_view('templates/game/show_status', [
             'game' => [
@@ -188,14 +190,14 @@ case 's_moderator':
                 'day' => $day
             ]
         ]);
-  break;
+    break;
 
     // ---------------------------------
     // Speed
     // ---------------------------------
 
     // Replace text with form to change speed.
-  case 'e_speed':
+    case 'e_speed':
         $instructions = "Change the speed of the game.";
 
         $speed = $game->get_deadline_speed();
@@ -208,26 +210,26 @@ case 's_moderator':
                 'speed' => $speed
             ]
         ]);
-  break;
+    break;
 
     // Edit database with new Speed, return text to original.
-  case 's_speed':
-    $speed = $_REQUEST['speed'];
+    case 's_speed':
+        $speed = $_REQUEST['speed'];
 
-    $game->set_speed($speed);
+        $game->set_speed($speed);
 
-	$cache->remove('games-in-progress-fast-list', 'front');
-	$cache->remove('games-in-progress-list', 'front');
-	$cache->remove('games-signup-fast-list', 'front');
-	$cache->remove('games-signup-swf-list', 'front');
-	$cache->remove('games-signup-list', 'front');
+        $cache->remove('games-in-progress-fast-list', 'front');
+        $cache->remove('games-in-progress-list', 'front');
+        $cache->remove('games-signup-fast-list', 'front');
+        $cache->remove('games-signup-swf-list', 'front');
+        $cache->remove('games-signup-list', 'front');
 
-    render_view('templates/game/show_speed', [
-        'game' => [
-            'speed' => $speed
-        ]
-    ]);
-  break;
+        render_view('templates/game/show_speed', [
+            'game' => [
+                'speed' => $speed
+            ]
+        ]);
+    break;
 
 # Replace text with form to change deadlines.
   case 'e_deadline':

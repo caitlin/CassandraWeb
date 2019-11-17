@@ -93,12 +93,14 @@ class Game
         $sql = sprintf("update Games set description=%s where id=%s",quote_smart($new_description),quote_smart($this->id));
         $result = mysql_query($sql);
 
-        return $new_description; 
+        return mysql_query($sql); 
     }
 
     public function set_full_status($status, $phase, $day) {
         $sql = sprintf("update Games set `status`=%s, phase=%s, day=%s where id=%s",quote_smart($status),quote_smart($phase),quote_smart($day),quote_smart($this->id));
         
+        return mysql_query($sql);
+    }
 
     public function set_speed($speed) {
         $sql = sprintf("update Games set deadline_speed=%s where id=%s",quote_smart($speed),quote_smart($this->id));
