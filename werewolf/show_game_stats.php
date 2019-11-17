@@ -119,7 +119,7 @@ function update_comment($user_id,$game_id,$original_id,$comment){
 
 // CONTROLLER
 require_once('src/Games/Game.php');
-$gameObj = new Game($game_thread_id);
+$gameObj = Game::thread_id($game_thread_id);
 $nonplayers_who_posted = $gameObj->get_nonplayers_who_posted();
 $latest_post_id = $gameObj->get_latest_post_id();
 $wolfy_awards = $gameObj->get_wolfy_awards();

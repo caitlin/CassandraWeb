@@ -8,6 +8,7 @@ header("Pragma: no-cache" );
 include_once "edit_game_functions.php";
 include_once "php/bgg.php";
 include_once "php/common.php";
+require_once('src/Games/Game.php');
 
 $cache = init_cache();
 
@@ -17,6 +18,7 @@ exit;
 }
 
 $game_id = $_REQUEST['game_id'];
+$game = Game::game_id($game_id);
 
 switch ( $_REQUEST['q'] ) {
 
