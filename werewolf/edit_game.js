@@ -1,26 +1,27 @@
 function send_edit_request(path) {
     show_busy()
-    element = "edit_space"
-    xmlHttp=GetXmlHttpObject(stateChanged)
-    xmlHttp.open("GET", path , false)
-    xmlHttp.send(null)
+    send_xml_request(path, "edit_space")
     MicroModal.show('modal-edit-game')
     hide_busy()
 }
 
 function send_submit_request(path, element_name) {
     show_busy()
+    send_xml_request(path, element_name)
+    hide_busy()
+    MicroModal.close('modal-edit-game')
+    clear_game_edit()
+}
+
+function send_xml_request(path, element_name) {
     element = element_name
     xmlHttp=GetXmlHttpObject(stateChanged)
     xmlHttp.open("GET", path , false)
     xmlHttp.send(null)
-    hide_busy()
-    MicroModal.close('modal-edit-game')
-    clear_edit()
 }
 
-function clear_edit() {
-    send_edit_request("edit_game.php")
+function clear_game_edit() {
+    send_xml_request("/edit_game.php", "edit_space")
 } 
 
 // ------------------------------------
@@ -28,7 +29,7 @@ function clear_edit() {
 // ------------------------------------
 
 function edit_mod() {
-    send_edit_request("edit_game.php?q=e_moderator&game_id="+game_id)
+    send_edit_request("/edit_game.php?q=e_moderator&game_id="+game_id)
 }
 
 function submit_Moderators() {
