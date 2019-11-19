@@ -53,7 +53,7 @@ class Game
     // -------------------------------------------------------------------------
     // Public functions
     // -------------------------------------------------------------------------
-    
+
     // Getters
 
     public function get_complexity() {
@@ -106,17 +106,6 @@ class Game
         $result = mysql_query($sql);
 
         return mysql_result($result,0,0);
-    }
-
-    public function get_moderators() {
-        $sql = sprintf("SELECT Moderators.user_id AS id, Users.name AS name FROM Users, Moderators WHERE Moderators.user_id=Users.id AND Moderators.game_id=%s ORDER BY name",quote_smart($this->id));
-        $result = mysql_query($sql);
-        $ids = [];
-        while ( $row = mysql_fetch_array($result) ) {
-            $ids[$row['id']]=$row['name'];
-        }
-
-        return $ids;
     }
 
     public function get_number() {
@@ -219,7 +208,67 @@ class Game
         return mysql_query($sql);
     }
 
-    public function set_moderators($ids) {
+    public function set_speed($speed) {
+        $sql = sprintf("update Games set deadline_speed=%s where id=%s",quote_smart($speed),quote_smart($this->id));
+
+        return mysql_query($sql);
+    }
+
+    public function set_status($status, $phase, $day) {
+        $sql = sprintf("update Games set `status`=%s, phase=%s, day=%s where id=%s",quote_smart($status),quote_smart($phase),quote_smart($day),quote_smart($this->id));
+        
+        return mysql_query($sql);
+    }
+
+    public function set_thread_id($thread_id) {
+        $sql = sprintf("UPDATE Games SET thread_id=%s WHERE id=%s",quote_smart($thread_id),quote_smart($this->id));
+        return mysql_query($sql);
+    }
+
+    public function set_title($title) {
+        $sql = sprintf("update Games set title=%s where id=%s",quote_smart($title),quote_smart($this->id));
+
+        return mysql_query($sql);
+    }
+
+    public function set_winner($winner) {
+        $sql = sprintf("update Games set winner=%s where id=%s",quote_smart($winner),quote_smart($this->id));
+
+        return mysql_query($sql);
+    }
+
+    // Associations
+
+    public function get_moderators() {
+        $sql = sprintf("SELECT Moderators.user_id AS id, Users.name AS name FROM Users, Moderators WHERE Moderators.user_id=Users.id AND Moderators.game_id=%s ORDER BY name",quote_smart($this->id));
+        $result = mysql_query($sql);
+        $ids = [];
+        while ( $row = mysql_fetch_array($result) ) {
+            $ids[$row['id']]=$row['name'];
+        }
+
+        return $ids;
+    }
+
+    public function get_moderator_ids() {
+        $sql = sprintf("SELECT user_id FROM Moderators WHERE game_id=%s",quote_smart($this->id));
+        $result = mysql_query($sql);
+        $ids = [];
+        while ( $row = mysql_fetch_array($result) ) {
+            $id[] = $row['user_id'];
+        }
+
+        return $ids;
+    }
+
+    public function create_moderator($user_id) {
+        $sql = "insert into Moderators (user_id, game_id) values ('".$user_id."', '$this->id')";
+        $result = mysql_query($sql);
+
+        return mysql_insert_id();
+    }
+
+    public function update_moderators($ids) {
         $newidlist = $ids;
         sort($newidlist);
         $oldidlist = [];
@@ -266,32 +315,33 @@ class Game
         return true;
     }
 
-    public function set_speed($speed) {
-        $sql = sprintf("update Games set deadline_speed=%s where id=%s",quote_smart($speed),quote_smart($this->id));
+    public function get_subthreads() {
+        $sql = sprintf("SELECT * FROM Games WHERE parent_game_id=%s",quote_smart($this->id));
+        $result = mysql_query($sql);
+        $subthreads = [];
+        while ( $row = mysql_fetch_array($result) ) {
+            $subthreads[] =  $row;
+        }
 
-        return mysql_query($sql);
+        return $subthreads;
     }
 
-    public function set_status($status, $phase, $day) {
-        $sql = sprintf("update Games set `status`=%s, phase=%s, day=%s where id=%s",quote_smart($status),quote_smart($phase),quote_smart($day),quote_smart($this->id));
+    public function create_subthread($thread_id) {
+        $sql = sprintf("INSERT INTO Games (id, title, status, thread_id, parent_game_id) 
+                        VALUES ( NULL, 'Sub-Thread', 'Sub-Thread', %s, %s)",
+                        quote_smart($thread_id),quote_smart($this->id));
+        $result = mysql_query($sql);
         
-        return mysql_query($sql);
+        return mysql_insert_id();
     }
 
-    public function set_thread_id($thread_id) {
-        $sql = sprintf("UPDATE Games SET thread_id=%s WHERE id=%s",quote_smart($thread_id),quote_smart($this->id));
-        return mysql_query($sql);
-    }
+    public function destroy_subthread($thread_id) {
+        $sql = sprintf("select id from Games where thread_id=%s",quote_smart($thread_id));
+        $result = mysql_query($sql);
+        $subthread_game_id = mysql_result($result,0,0);
 
-    public function set_title($title) {
-        $sql = sprintf("update Games set title=%s where id=%s",quote_smart($title),quote_smart($this->id));
-
-        return mysql_query($sql);
-    }
-
-    public function set_winner($winner) {
-        $sql = sprintf("update Games set winner=%s where id=%s",quote_smart($winner),quote_smart($this->id));
-
+        $sql = "delete from Games where id ='$subthread_game_id'";
+        
         return mysql_query($sql);
     }
 

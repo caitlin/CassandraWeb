@@ -83,20 +83,6 @@ function edit_speed($game_id) {
   print $output;
 }
 
-function edit_subt($game_id) {
-  $sql = sprintf("select * from Games where parent_game_id=%s",quote_smart($game_id));
-  $result = mysql_query($sql);
-  $output = "";
-  while ( $row = mysql_fetch_array($result) ) {
-    $output .=  $row['title']." - ".$row['thread_id']." <a href='javascript:delete_subt(\"".$row['thread_id']."\")'>delete</a><br />\n";
-  }
-  $output .= "<form name='new_subt'><input type='text' name='tid' />\n";
-  $output .= "<a href='javascript:add_subt()'>Add a Sub-Thread</a><br />\n";
-  $output .= "</form>\n";
-
-  print $output;
-}
-
 function show_subt($game_id) {
   global $game_page, $open_comment, $close_comment;
   $sql = sprintf("select * from Games where parent_game_id=%s",quote_smart($game_id));

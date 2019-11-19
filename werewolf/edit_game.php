@@ -60,7 +60,7 @@ switch ( $_REQUEST['q'] ) {
     case 's_moderator':
         $mod_list = split(",", $_REQUEST['modlist']);
 
-        $game->set_moderators($mod_list);
+        $game->update_moderators($mod_list);
         $moderators = $game->get_moderators();
         $post_counts = $game->get_post_count_for_users(array_keys($moderators));
         $thread_id = $game->get_thread_id();
@@ -411,8 +411,8 @@ switch ( $_REQUEST['q'] ) {
     // Max Players
     // ---------------------------------
 
-     // Show change Max Players Dialoge Box
-     case 'e_maxplayers':
+    // Show change Max Players Dialoge Box
+    case 'e_maxplayers':
         $instructions = "Change Max number of players.  If you make this number less than or equal to the number of people currently signed up then no more people can sign up via Cassandra.";
         
         $max_players = $game->get_max_players();
@@ -444,34 +444,47 @@ switch ( $_REQUEST['q'] ) {
     // Subthread
     // ---------------------------------
 
-    # Replace text with form to add or delete sub-threads.
+    // Replace text with form to add or delete sub-threads.
     case 'e_subthread':
-        print "If your game has sub-threads associated with it, such as threads where team-member can discussthings.  Then you add them here.  Once you have added the BGG thead_id you can edit that 'game' page just as you are editing this one.<br /><br />";
-        edit_subt($game_id);
+        $instructions = "If your game has sub-threads associated with it, such as threads where team-member can discuss things.  Then you add them here.  Once you have added the BGG thead_id you can edit that 'game' page just as you are editing this one.";
+        
+        $subthreads = $game->get_subthreads();
+
+        render_view('templates/game/edit_subthreads', [
+            'instructions' => $instructions,
+            'subthreads' => $subthreads,
+        ]);
     break;
     
-    # Delete a Sub-Thread
+    // Delete a Sub-Thread
     case 'd_subthread':
-        $sql = sprintf("select id from Games where thread_id=%s",quote_smart($_REQUEST['thread_id']));
-        $result = mysql_query($sql);
-        $st_game_id = mysql_result($result,0,0);
-        $sql = "delete from Games where id ='$st_game_id'";
-        $result = mysql_query($sql);
-        show_subt($game_id);
+        $thread_id = $_REQUEST['thread_id'];
+        
+        $game->destroy_subthread($thread_id);
+
+        $subthreads = $game->get_subthreads();
+
+        render_view('templates/game/show_subthreads', [
+            'subthreads' => $subthreads,
+        ]);
     break;
     
-    # Add a Sub-Thread
+    // Add a Sub-Thread
     case 'a_subthread':
-        $sql = sprintf("insert into Games (id, title, status, thread_id, parent_game_id) values ( NULL, 'Sub-Thread', 'Sub-Thread', %s, %s)",quote_smart($_REQUEST['thread_id']),quote_smart($game_id));
-        $result = mysql_query($sql);
-        $new_game_id = mysql_insert_id();
-        $sql = sprintf("select user_id from Moderators where game_id=%s",quote_smart($game_id));
-        $result = mysql_query($sql);
-        while ( $mod = mysql_fetch_array($result) ) {
-        $sql2 = "insert into Moderators (user_id, game_id) values ('".$mod['user_id']."', '$new_game_id')";
-        $result2 = mysql_query($sql2);
+        $thread_id = $_REQUEST['thread_id'];
+
+        $new_game_id = $game->create_subthread($thread_id);
+        $new_game = Game::game_id($new_game_id);
+        $moderator_ids = $new_game->get_moderator_ids();
+        foreach ( $moderator_ids as $moderator_id ) {
+            $new_game->create_moderator($moderator_id);
         }
-        show_subt($game_id);
+
+        $subthreads = $game->get_subthreads();
+
+        render_view('templates/game/show_subthreads', [
+            'subthreads' => $subthreads,
+        ]);
     break;
 
     // ---------------------------------
