@@ -11,11 +11,6 @@ include_once "php/common.php";
 require_once('src/Games/Game.php');
 require_once('src/Users/User.php');
 
-function render_view($file, $vars = []) {
-    extract($vars);
-    include dirname(__FILE__) . '/' . $file . '.php';
-}
-
 $cache = init_cache();
 
 if ( ! isset($_REQUEST['q']) ) {
@@ -73,9 +68,9 @@ switch ( $_REQUEST['q'] ) {
         $cache->remove('games-signup-list', 'front');
 
         render_view('templates/game/show_moderators', [
+            'moderators' => $moderators,
+            'post_counts' => $post_counts,
             'game' => [
-                'moderators' => $moderators,
-                'post_counts' => $post_counts,
                 'thread_id' => $thread_id
             ]
         ]);
@@ -237,7 +232,7 @@ switch ( $_REQUEST['q'] ) {
 
         render_view('templates/game/show_speed', [
             'game' => [
-                'speed' => $speed
+                'deadline_speed' => $speed
             ]
         ]);
     break;
@@ -260,7 +255,6 @@ switch ( $_REQUEST['q'] ) {
 
     // Edit database with new Deadlines return text to original.
     case 's_deadline':
-        
         if ( isset($_REQUEST['speed']) ) {
             // If we're changing the speed of a game, the deadlines need to be visually refreshed
             $deadlines = $game->get_deadlines();
@@ -274,7 +268,7 @@ switch ( $_REQUEST['q'] ) {
             $night_length = $_REQUEST['night_length'];
 
             $game->set_deadlines($dusk, $dawn, $day_length, $night_length);
-            $speed = $game->get_deadline_speed();
+            $speed = $game->get_speed();
         }
 
         $cache->remove('games-in-progress-fast-list', 'front');
@@ -288,7 +282,7 @@ switch ( $_REQUEST['q'] ) {
 
         render_view('templates/game/show_deadline', [
             'game' => [
-                'speed' => $speed,
+                'deadline_speed' => $speed,
                 'dusk' => $dusk,
                 'dawn' => $dawn,
                 'day_length' => $day_length,

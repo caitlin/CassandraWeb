@@ -54,6 +54,13 @@ class Game
     // Public functions
     // -------------------------------------------------------------------------
 
+    public function get() {
+        $sql = sprintf("SELECT complex AS complexity, DATE_FORMAT(start_date, '%%b %%e, %%Y') AS start_date, DATE_FORMAT(start_date, '%%l:%%i %%p') AS start_time, DATE_FORMAT(end_date, '%%b %%e, %%Y') AS end_date, swf, status, deadline_speed, lynch_time AS dusk, na_deadline AS dawn, day_length, night_length, description, max_players, number, title, phase, day, thread_id, id, winner FROM Games  WHERE id=%s",quote_smart($this->id));
+        $result = mysql_query($sql);
+
+        return mysql_fetch_array($result);
+    }
+
     // Getters
 
     public function get_complexity() {
@@ -85,10 +92,10 @@ class Game
 
         return [
             'dusk' => $dusk,
-            'dawn' => $da,
+            'dawn' => $dawn,
             'day_length' => $day_length,
             'night_length' => $night_length,
-            'speed' => $speed
+            'deadline_speed' => $speed
         ];
     }
 

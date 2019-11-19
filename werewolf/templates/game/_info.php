@@ -1,11 +1,19 @@
 <!-- Table with Main Game Information -->
 <table class='forum_table' border='0' >
+    <?php // MODERATORS ?>
     <tr>
         <td>
             <div <?=$open_comment;?>onMouseOver='show_hint("Click to Edit Moderators")' onMouseOut='hide_hint()' onClick='edit_mod()' <?=$close_comment;?>><b>Moderator: </b></div>
         </td>
-        <td id='mod_td'><?php show_moderator($game['id']); ?></td>
+        <td id='mod_td'>
+            <?php render_view('templates/game/show_moderators', [ 
+                'moderators' => $moderators,
+                'post_counts' => $post_counts,
+                'game' => $gameAttributes
+            ]) ?>
+        </td>
     </tr>
+    <?php // DATES ?>
     <?php if ( !$subthread ) { ?>
         <tr>
             <td>
@@ -14,13 +22,18 @@
             <td>
                 <table border='0' width='100%'>
                     <tr>
-                        <td id='date_td'><?php show_dates($game['id']); ?></td>
+                        <td id='date_td'>
+                            <?php render_view('templates/game/show_dates', [ 
+                                'game' => $gameAttributes
+                            ]) ?>
+                        </td>
                         <td align='right'><? print add_game_link($game['id']); ?></td>
                     </tr>
                 </table>
             </td>
         </tr>
     <?php } ?>
+    <?php // STATUS ?>
     <tr>
         <td>
             <div <?=$open_comment;?>onMouseOver='show_hint("Click to Change Status")' onMouseOut='hide_hint()' onClick='edit_status()' <?=$close_comment;?>><b>Status: </b><div>
@@ -73,40 +86,29 @@
             </table>
         </td>
     </tr>
+    <?php // SPEED ?>
     <tr>
         <td>
             <div <?=$open_comment;?>onMouseOver='show_hint("Click to Change Speed")' onMouseOut='hide_hint()' onClick='edit_speed()' <?=$close_comment;?>><b>Speed:</b></div>
         </td>
         <td id='speed_td'>
-            <div <?=$open_comment;?> onMouseOver='show_hint("Click to Change Speed")' onMouseOut='hide_hint()' onClick='edit_speed()' <?=$close_comment;?>><?=$game['deadline_speed'];?></div>
+            <?php render_view('templates/game/show_speed', [ 
+                'game' => $gameAttributes 
+            ]) ?>
         </td>
     </tr>
+    <?php // DEADLINES ?>
     <tr>
         <td>
             <div <?=$open_comment;?> onMouseOver='show_hint("Click to Change Deadlines")' onMouseOut='hide_hint()' onClick='edit_deadline()' <?=$close_comment;?>><b>Deadlines:</b></div>
         </td>
         <td id='deadline_td'>
-            <div <?=$open_comment;?> onMouseOver='show_hint("Click to Change Deadlines")' onMouseOut='hide_hint()' onClick='edit_deadline()' <?=$close_comment;?>>
-            <?php
-            list($lynch,$lmin,$x) = split(":",$game['lynch_time']);
-            list($night,$nmin,$x) = split(":",$game['na_deadline']);
-            list($day_length,$dlmin,$x) = split(":",$game['day_length']);
-            list($night_length,$nlmin,$x) = split(":",$game['night_length']);
-            if ( $game['deadline_speed'] == "Standard" ) {
-                if ( $lynch != "" ) {
-                    print "Dawn: ".time_24($lynch,$lmin)." BGG<br />";
-                }
-                if ( $night != "" ) {
-                    print "Dusk: ".time_24($night,$nmin)." BGG";
-                }
-            } else {
-                print "Day Length: $day_length:$dlmin <br />\n";
-                print "Night Length: $night_length:$nlmin <br />\n";
-            }
-            ?>
-            </div>
+            <?php render_view('templates/game/show_deadline', [ 
+                'game' => $gameAttributes
+            ]) ?>
         </td>
     </tr>
+    <?php // LYNCH DAYS ?>
     <?php
     if ( $lynch != "" ) {
         $sql = sprintf("SELECT concat_ws(', ',if(sun, 'Sun', null),if(mon, 'Mon', null), if(tue, 'Tue', null), if(wed, 'Wed', null), if(thu, 'Thu', null), if(fri, 'Fri', null), if(sat, 'Sat', null)) as lynch_days from Auto_dusk where  game_id=%s",quote_smart($game['id']));
@@ -117,26 +119,33 @@
         }
     }
     ?>
+    <?php // MAX PLAYERS ?>
     <?php if ( $game['status'] == "Sign-up" ) { ?>
         <tr>
             <td>
                 <div <?=$open_comment;?> onMouseOver='show_hint(\"Click to Change Max Players\")' onMouseOut='hide_hint()' onClick='edit_maxplayers()' <?=$close_comment;?>><b>Max Players:</b></div>
             </td>
             <td id='td_maxplayers'>
-                <div <?=$open_comment;?> onMouseOver='show_hint(\"Click to Change Max Players\")' onMouseOut='hide_hint()' onClick='edit_maxplayers()' <?=$close_comment;?>><?= $game['max_players'] ?></div>
+                <?php render_view('templates/game/show_max_players', [ 
+                    'game' => $gameAttributes
+                ]) ?>
             </td>
         </tr>
     <?php } ?>
+    <?php // COMPLEXITY ?>
     <?php if ( !$subthread) { ?>
         <tr>
             <td>
                 <div <?=$open_comment;?> onMouseOver='show_hint("Click to Change Complexity")' onMouseOut='hide_hint()' onClick='edit_complex()' <?=$close_comment;?>><b>Complexity:</b></div>
             </td>
             <td id='td_complex'>
-                <div <?=$open_comment;?> onMouseOver='show_hint("Click to Change Complexity")' onMouseOut='hide_hint()' onClick='edit_complex()' <?=$close_comment;?>><?php print show_complex($game['complex']); ?></div>
+                <?php render_view('templates/game/show_complexity', [ 
+                    'game' => $gameAttributes
+                ]) ?>
             </td>
         </tr>
     <?php } ?>
+    <?php // WINNER ?>
     <?php 
     $finished = false;
     if ( $status == "Finished" || $edit) {
@@ -147,10 +156,13 @@
                 <div  <?=$open_comment;?> onMouseOver='show_hint("Click to Change Winner")' onMouseOut='hide_hint()' onClick='edit_winner()' <?=$close_comment;?>><b>Winner:</b></div>
             </td>
             <td id='win_td'>
-                <div  <?=$open_comment;?> onMouseOver='show_hint("Click to Change Winner")' onMouseOut='hide_hint()' onClick='edit_winner()' <?=$close_comment;?>><?= $game['winner'] ?></div>
+                <?php render_view('templates/game/show_winner', [ 
+                    'game' => $gameAttributes
+                ]) ?>
             </td>
         </tr>
     <?php } ?>
+    <?php // THREAD ID ?>
     <?php if ( $edit ) { ?>
         <tr>
             <td>
@@ -161,6 +173,7 @@
             </td>
         </tr>
     <?php } ?>
+    <?php // SUBTHREADS ?>
     <?php
     if ( ! $subthread) {
         $sql = "select count(*) from Games where parent_game_id='".$game['id']."'";
@@ -172,15 +185,22 @@
                 <td>
                     <div <?=$open_comment;?> onMouseOver='show_hint("Click to Add or Delete a Sub-Thread")' onMouseOut='hide_hint()' onClick='edit_subt()' <?=$close_comment;?>><b>Sub-Threads:</b></div>
                 </td>
-                <td id='subt_td'><?php show_subt($game['id']) ?></td>
+                <td id='subt_td'>
+                    <?php render_view('templates/game/show_subthreads', [ 
+                        'subthreads' => $subthreads
+                    ]) ?>
+                </td>
             </tr>
     <?php } } ?>
+    <?php // DESCRIPTION ?>
     <tr>
         <td>
             <div <?=$open_comment;?>onMouseOver='show_hint("Click to change Description")' onMouseOut='hide_hint()' onclick='edit_desc()' <?=$close_comment;?>><b>Description:</b></div>
         </td>
         <td id='desc_td'>
-            <div <?=$open_comment;?>onMouseOver='show_hint("Click to change Description")' onMouseOut='hide_hint()' onclick='edit_desc()' <?=$close_comment;?>><?=stripslashes($game['description']);?></div>
+            <?php render_view('templates/game/show_description', [ 
+                'description' => $gameAttributes['description'] 
+            ]) ?>
         </td>
     </tr>
 </table>

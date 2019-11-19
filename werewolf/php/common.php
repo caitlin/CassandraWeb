@@ -390,4 +390,11 @@ function safe_html($text,$tags='') {
 
   return $safe_text;
 }
+
+function render_view($file, $vars = []) {
+    extract($vars);
+    // set to base root
+    include dirname(__FILE__) . '/../' . $file . '.php';
+}
+
 ?>
