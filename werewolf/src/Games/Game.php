@@ -56,22 +56,6 @@ class Game
     
     // Getters
 
-    public function get_number() {
-        $sql = "select number from Games where id='$this->id'";
-        $result = mysql_query($sql);
-        
-        return mysql_result($result,0,0);
-    }
-
-    public function get_thread_id() {
-        $sql = sprintf("SELECT thread_id 
-                        FROM Games 
-                        WHERE id=%s",quote_smart($this->id));
-        $result = mysql_query($sql);
-
-        return mysql_result($result,0,0);
-    }
-
     public function get_complexity() {
         $sql = sprintf("select complex from Games where id=%s",quote_smart($this->id));
         $result = mysql_query($sql);
@@ -79,36 +63,13 @@ class Game
         return mysql_result($result,0,0);
     }
 
-    public function get_deadline_speed() {
-        $sql=sprintf("select deadline_speed from Games where id=%s",quote_smart($this->id));
+    public function get_dates() {
+        $date_format = "'%Y-%m-%d'";
+        $time_format = "'%H:%i'";
+        $sql = sprintf("select date_format(start_date, %s) as start_date, date_format(start_date, %s) as start_time, date_format(end_date, %s) as end_date, swf, status, deadline_speed from Games where id=%s", $date_format,$time_format,$date_format,quote_smart($this->id));
         $result = mysql_query($sql);
 
-        if ( $result ) { 
-            return mysql_result($result,0,0); 
-        }
-    }
-
-    public function get_description() {
-        $sql = sprintf("select description from Games where id=%s",quote_smart($this->id));
-        $result = mysql_query($sql);
-
-        if ( $result ) { 
-            return mysql_result($result,0,0); 
-        }
-    }
-
-    // Status has three parts: status, phase, day
-    public function get_full_status() {
-        $sql=sprintf("select status, phase, day from Games where id=%s",quote_smart($this->id));
-        $result = mysql_query($sql);
-
-        if ( $result ) { 
-            return [
-                'status' => mysql_result($result,0,0),
-                'phase' => mysql_result($result,0,1),
-                'day' => mysql_result($result,0,2)
-            ];
-        }
+        return mysql_fetch_array($result);
     }
 
     // Deadline info has 5 parts: dusk, dawn, day, night, speed
@@ -130,7 +91,16 @@ class Game
             'speed' => $speed
         ];
     }
-  
+
+    public function get_description() {
+        $sql = sprintf("select description from Games where id=%s",quote_smart($this->id));
+        $result = mysql_query($sql);
+
+        if ( $result ) { 
+            return mysql_result($result,0,0); 
+        }
+    }
+
     public function get_moderators() {
         $sql = sprintf("SELECT Moderators.user_id AS id, Users.name AS name FROM Users, Moderators WHERE Moderators.user_id=Users.id AND Moderators.game_id=%s ORDER BY name",quote_smart($this->id));
         $result = mysql_query($sql);
@@ -142,17 +112,47 @@ class Game
         return $ids;
     }
 
-    public function get_dates() {
-        $date_format = "'%Y-%m-%d'";
-        $time_format = "'%H:%i'";
-        $sql = sprintf("select date_format(start_date, %s) as start_date, date_format(start_date, %s) as start_time, date_format(end_date, %s) as end_date, swf, status, deadline_speed from Games where id=%s", $date_format,$time_format,$date_format,quote_smart($this->id));
+    public function get_number() {
+        $sql = "select number from Games where id='$this->id'";
+        $result = mysql_query($sql);
+        
+        return mysql_result($result,0,0);
+    }
+
+    public function get_deadline_speed() {
+        $sql=sprintf("select deadline_speed from Games where id=%s",quote_smart($this->id));
         $result = mysql_query($sql);
 
-        return mysql_fetch_array($result);
+        if ( $result ) { 
+            return mysql_result($result,0,0); 
+        }
+    }
+
+    // Status has three parts: status, phase, day
+    public function get_full_status() {
+        $sql=sprintf("select status, phase, day from Games where id=%s",quote_smart($this->id));
+        $result = mysql_query($sql);
+
+        if ( $result ) { 
+            return [
+                'status' => mysql_result($result,0,0),
+                'phase' => mysql_result($result,0,1),
+                'day' => mysql_result($result,0,2)
+            ];
+        }
     }
 
     public function get_title() {
         $sql = sprintf("select title from Games where id=%s",quote_smart($this->id));
+        $result = mysql_query($sql);
+
+        return mysql_result($result,0,0);
+    }
+
+    public function get_thread_id() {
+        $sql = sprintf("SELECT thread_id 
+                        FROM Games 
+                        WHERE id=%s",quote_smart($this->id));
         $result = mysql_query($sql);
 
         return mysql_result($result,0,0);
@@ -175,24 +175,19 @@ class Game
         return mysql_query($sql);
     }
 
+    public function set_dates($start_timestamp, $end_timestamp, $swf) {
+        $sql = sprintf("UPDATE Games SET start_date=%s, end_date=%s, swf=%s WHERE id=%s",
+                        quote_smart($start_timestamp),quote_smart($end_timestamp),quote_smart($swf),quote_smart($this->id));
+
+        return mysql_query($sql);
+    }
+
     public function set_description($description) {
         $new_description = safe_html($description,"<a>");
         $sql = sprintf("update Games set description=%s where id=%s",quote_smart($new_description),quote_smart($this->id));
         $result = mysql_query($sql);
 
         return mysql_query($sql); 
-    }
-
-    public function set_full_status($status, $phase, $day) {
-        $sql = sprintf("update Games set `status`=%s, phase=%s, day=%s where id=%s",quote_smart($status),quote_smart($phase),quote_smart($day),quote_smart($this->id));
-        
-        return mysql_query($sql);
-    }
-
-    public function set_speed($speed) {
-        $sql = sprintf("update Games set deadline_speed=%s where id=%s",quote_smart($speed),quote_smart($this->id));
-
-        return mysql_query($sql);
     }
 
     public function set_deadlines($dusk, $dawn, $day_length, $night_length) {
@@ -259,10 +254,15 @@ class Game
         return true;
     }
 
-    public function set_dates($start_timestamp, $end_timestamp, $swf) {
-        $sql = sprintf("UPDATE Games SET start_date=%s, end_date=%s, swf=%s WHERE id=%s",
-                        quote_smart($start_timestamp),quote_smart($end_timestamp),quote_smart($swf),quote_smart($this->id));
+    public function set_speed($speed) {
+        $sql = sprintf("update Games set deadline_speed=%s where id=%s",quote_smart($speed),quote_smart($this->id));
 
+        return mysql_query($sql);
+    }
+
+    public function set_full_status($status, $phase, $day) {
+        $sql = sprintf("update Games set `status`=%s, phase=%s, day=%s where id=%s",quote_smart($status),quote_smart($phase),quote_smart($day),quote_smart($this->id));
+        
         return mysql_query($sql);
     }
 
