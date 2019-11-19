@@ -9,6 +9,7 @@ include_once "edit_game_functions.php";
 include_once "php/bgg.php";
 include_once "php/common.php";
 require_once('src/Games/Game.php');
+require_once('src/Users/User.php');
 
 function render_view($file, $vars = []) {
     extract($vars);
@@ -25,66 +26,56 @@ if ( ! isset($_REQUEST['q']) ) {
 $game_id = $_REQUEST['game_id'];
 $game = Game::game_id($game_id);
 
+// -----------------------------------------------------------------------------
+// Handle each edit/update action
+// -----------------------------------------------------------------------------
+
 switch ( $_REQUEST['q'] ) {
 
-# Replace text with form to edit_moderators.
-case 'e_moderator':
-print "Select moderators.  Use Control to select more than one.<br /><br />";
-edit_moderator($game_id);
-break;
+    // ---------------------------------
+    // Moderators
+    // ---------------------------------
 
-# Edit database with new Moderator list and return text to original.
-case 's_moderator':
-$newidlist = split( ",", $_REQUEST['modlist']);
-sort($newidlist);
-$sql = sprintf("select user_id from Games, Moderators where Games.id = Moderators.game_id and Games.id=%s",quote_smart($game_id));
-$result = mysql_query($sql);
-while ( $row = mysql_fetch_array($result) ) {
-$oldidlist[] = $row['user_id'];
-}
-$cache->clean('front-signup-' . $game_id);
-$cache->clean('front-signup-swf-' . $game_id);
-$cache->clean('front-signup-fast-' . $game_id);
-$cache->remove('games-signup-fast-list', 'front');
-$cache->remove('games-signup-swf-list', 'front');
-$cache->remove('games-signup-list', 'front');
+    // Replace text with form to edit_moderators.
+    case 'e_moderator':
+        $instructions = "Select moderators.  Use Control to select more than one.";
 
-# Find Id's that need to be added.
-foreach ( $newidlist as $newid ) {
-$found = false;
-foreach ( $oldidlist as $oldid ) {
-if ( $newid == $oldid ) $found = true;
-}
-if ( ! $found ) $addlist[] = $newid;
-}
+        $moderators = $game->get_moderators();
+        $users = User::get_all();
 
-# Add Id's that need to be added.
-if ( $addlist[0] != "" ) {
-foreach ( $addlist as $id ) {
-  $sql = sprintf("insert into Moderators ( user_id, game_id ) values ( %s, %s )",quote_smart($id),quote_smart($game_id));
-  $result = mysql_query($sql);
-}
-}
+        render_view('templates/game/edit_moderators', [
+            'instructions' => $instructions,
+            'users' => $users,
+            'game' => [
+                'moderator_ids' => array_keys($moderators)
+            ]
+        ]);
+    break;
 
-# Find id's that need to be deleted.
-foreach ( $oldidlist as $oldid ) {
-$found = false;
-foreach ( $newidlist as $newid ) {
-  if ( $newid == $oldid ) $found = true;
-}
-if ( ! $found ) $dellist[] = $oldid;
-}
+    // Edit database with new Moderator list and return text to original.
+    case 's_moderator':
+        $mod_list = split(",", $_REQUEST['modlist']);
 
-# Delete id's that need to be deleted.
-if ( $dellist[0] != "" ) {
-foreach ( $dellist as $id ) {
-  $sql = sprintf("delete from Moderators where user_id=%s and game_id=%s",quote_smart($id),quote_smart($game_id));
-  $result = mysql_query($sql);
-}
-}
+        $game->set_moderators($mod_list);
+        $moderators = $game->get_moderators();
+        $post_counts = $game->get_post_count_for_users(array_keys($moderators));
+        $thread_id = $game->get_thread_id();
 
-show_moderator($game_id);
-break;
+        $cache->clean('front-signup-' . $game_id);
+        $cache->clean('front-signup-swf-' . $game_id);
+        $cache->clean('front-signup-fast-' . $game_id);
+        $cache->remove('games-signup-fast-list', 'front');
+        $cache->remove('games-signup-swf-list', 'front');
+        $cache->remove('games-signup-list', 'front');
+
+        render_view('templates/game/show_moderators', [
+            'game' => [
+                'moderators' => $moderators,
+                'post_counts' => $post_counts,
+                'thread_id' => $thread_id
+            ]
+        ]);
+    break;
 
 # Replace text with form to edit_dates.
 case 'e_date':
@@ -332,15 +323,6 @@ $result = mysql_query($sql);
 $st_game_id = mysql_result($result,0,0);
 $sql = "delete from Games where id ='$st_game_id'";
 $result = mysql_query($sql);
-# The following is no longer needed because of sql triggers
-#$sql = "delete from Moderators where game_id='$st_game_id'";
-#$result = mysql_query($sql);
-#$sql = "delete from Players where game_id='$st_game_id'";
-#$result = mysql_query($sql);
-#$sql = "delete from Replacements where game_id='$st_game_id'";
-#$result = mysql_query($sql);
-#$sql = "delete from Posts where game_id='$st_game_id'";
-#$result = mysql_query($sql);
 show_subt($game_id);
 break;
 

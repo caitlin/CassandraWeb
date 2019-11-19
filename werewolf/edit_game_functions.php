@@ -44,33 +44,6 @@ function show_moderator($game_id) {
   print $output;
 }
 
-function edit_moderator($game_id) {
-  $output = "<form name='change_mod'>\n";
-  $output .= "<select name='moderator[]' size='25' multiple>\n";
-  $sql = sprintf("select user_id from Users, Moderators where Moderators.user_id=Users.id and game_id=%s order by name",quote_smart($game_id));
-  $result = mysql_query($sql);
-  while ( $row = mysql_fetch_array($result) ) {
-    $id[]=$row['user_id'];
-  }
-  $sql="Select id, name from Users where level != '0' order by name";
-  $result = mysql_query($sql);
-  $i = 0;
-  while ( $row = mysql_fetch_array($result) ) {
-    $selected = "";
-    if ( $row['id'] == $id[$i] ) {
-      $selected = "selected";
-	  $i++;
-    }
-    $output .= "<option $selected value='".$row['id']."' />".$row['name']."\n";
-  }
-
-  $output .= "</select>\n";
-  $output .= "<input type=button value='submit' name='submit' onClick='submit_Moderators()' />\n";
-  $output .= "</form>\n";
-
-  print $output;
-}
-
 function show_dates($game_id) {
   global $open_comment, $close_comment;
   $format = "'%b %e, %Y'";

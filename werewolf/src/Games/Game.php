@@ -55,6 +55,15 @@ class Game
     
     // Getters
 
+    public function get_thread_id() {
+        $sql = sprintf("SELECT thread_id 
+                        FROM Games 
+                        WHERE id=%s",quote_smart($this->id));
+        $result = mysql_query($sql);
+
+        return mysql_result($result,0,0);
+    }
+
     public function get_deadline_speed() {
         $sql=sprintf("select deadline_speed from Games where id=%s",quote_smart($this->id));
         $result = mysql_query($sql);
@@ -106,6 +115,17 @@ class Game
             'speed' => $speed
         ];
     }
+  
+    public function get_moderators() {
+        $sql = sprintf("SELECT Moderators.user_id AS id, Users.name AS name FROM Users, Moderators WHERE Moderators.user_id=Users.id AND Moderators.game_id=%s ORDER BY name",quote_smart($this->id));
+        $result = mysql_query($sql);
+        $ids = [];
+        while ( $row = mysql_fetch_array($result) ) {
+            $ids[$row['id']]=$row['name'];
+        }
+
+        return $ids;
+    }
 
     public function get_winner () {
         $sql=sprintf("select winner from Games where id=%s",quote_smart($this->id));
@@ -153,6 +173,53 @@ class Game
         $sql = sprintf("UPDATE Games SET `lynch_time`=%s, `na_deadline`=%s, `day_length`=%s, `night_length`=%s WHERE id=%s",$dusk_value,$dawn_value,quote_smart($day_length),quote_smart($night_length),quote_smart($this->id));
         
         return mysql_query($sql);
+    }
+
+    public function set_moderators($ids) {
+        $newidlist = $ids;
+        sort($newidlist);
+        $oldidlist = [];
+
+        $sql = sprintf("select user_id from Games, Moderators where Games.id = Moderators.game_id and Games.id=%s",quote_smart($this->id));
+        $result = mysql_query($sql);
+        while ( $row = mysql_fetch_array($result) ) {
+            $oldidlist[] = $row['user_id'];
+        }
+
+        # Find Id's that need to be added.
+        foreach ( $newidlist as $newid ) {
+            $found = false;
+            foreach ( $oldidlist as $oldid ) {
+                if ( $newid == $oldid ) $found = true;
+            }
+            if ( ! $found ) $addlist[] = $newid;
+        }
+
+        # Add Id's that need to be added.
+        if ( $addlist[0] != "" ) {
+            foreach ( $addlist as $id ) {
+                $sql = sprintf("insert into Moderators ( user_id, game_id ) values ( %s, %s )",quote_smart($id),quote_smart($this->id));
+                $result = mysql_query($sql);
+            }
+        }
+
+        # Find id's that need to be deleted.
+        foreach ( $oldidlist as $oldid ) {
+            $found = false;
+            foreach ( $newidlist as $newid ) {
+                if ( $newid == $oldid ) $found = true;
+            }
+            if ( ! $found ) $dellist[] = $oldid;
+        }
+
+        # Delete id's that need to be deleted.
+        if ( $dellist[0] != "" ) {
+            foreach ( $dellist as $id ) {
+                $sql = sprintf("delete from Moderators where user_id=%s and game_id=%s",quote_smart($id),quote_smart($this->id));
+                $result = mysql_query($sql);
+            }
+        }
+        return true;
     }
 
     public function set_winner($winner) {
@@ -214,6 +281,22 @@ class Game
         return $awards;
     }
   
+    // This query takes an array of user ids
+    public function get_post_count_for_users($ids) {
+        $game_id = $this->id;
+        $user_ids = join(',',$ids);
+        $sql = "SELECT user_id, count(*) AS post_count
+                FROM Posts 
+                WHERE game_id='$game_id' 
+                AND user_id IN ($user_ids) GROUP BY user_id";
+        $result = mysql_query($sql);
+        $counts = array_fill_keys($ids, 0);
+        while ( $row = mysql_fetch_array($result) ) {
+            $counts[$row['user_id']] = $row['post_count'];
+        }
+        
+        return $counts;
+    }
 
     // Other functions
 
