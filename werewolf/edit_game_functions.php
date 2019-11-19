@@ -610,68 +610,6 @@ function phase_dropdown($name,$phase) {
   return $output;
 }
 
-function edit_complex($game_id) {
-  $output = "<form name='comp_form'>";
-  $sql = sprintf("select complex from Games where id=%s",quote_smart($game_id));
-  $result = mysql_query($sql);
-  $complex = mysql_result($result,0,0);
-  $output .= complex_dropdown($complex);
-  $output .= "<input type='button' name='submit' value='submit' onClick='submit_complex()' />";
-  $output .= "</form>";
-  
-  print $output;
-}
-
-function complex_dropdown($complex) {
-  $output .= "<select name='complex'>";
-  if ( $complex == "Newbie" ) {
-    $output .= "<option value='' />";
-    $output .= "<option selected value='Newbie' />Newbie";
-    $output .= "<option value='Low' />Low";
-    $output .= "<option value='Medium' />Medium";
-    $output .= "<option value='High' />High";
-    $output .= "<option value='Extreme' />Extreme";
-  } elseif ( $complex == "Low" ) {
-    $output .= "<option value='' />";
-    $output .= "<option value='Newbie' />Newbie";
-    $output .= "<option selected value='Low' />Low";
-    $output .= "<option value='Medium' />Medium";
-    $output .= "<option value='High' />High";
-    $output .= "<option value='Extreme' />Extreme";
-  } elseif ( $complex == "Medium" ) {
-    $output .= "<option value='' />";
-    $output .= "<option value='Newbie' />Newbie";
-    $output .= "<option value='Low' />Low";
-    $output .= "<option selected value='Medium' />Medium";
-    $output .= "<option value='High' />High";
-    $output .= "<option value='Extreme' />Extreme";
-  } elseif ( $complex == "High" ) {
-    $output .= "<option value='' />";
-    $output .= "<option value='Newbie' />Newbie";
-    $output .= "<option value='Low' />Low";
-    $output .= "<option value='Medium' />Medium";
-    $output .= "<option selected value='High' />High";
-    $output .= "<option value='Extreme' />Extreme";
-  } elseif ( $complex == "Extreme" ) {
-    $output .= "<option value='' />";
-    $output .= "<option value='Newbie' />Newbie";
-    $output .= "<option value='Low' />Low";
-    $output .= "<option value='Medium' />Medium";
-    $output .= "<option value='High' />High";
-    $output .= "<option selected value='Extreme' />Extreme";
-  } else {
-    $output .= "<option selected value='' />";
-    $output .= "<option value='Newbie' />Newbie";
-    $output .= "<option value='Low' />Low";
-    $output .= "<option value='Medium' />Medium";
-    $output .= "<option value='High' />High";
-    $output .= "<option value='Extreme' />Extreme";
-  }
-  $output .= "</select>";
-
-  return $output;
-}
-
 function show_complex($complex) {
   if ( $complex == "" ) {
     return "";

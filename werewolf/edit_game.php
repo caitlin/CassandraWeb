@@ -338,7 +338,7 @@ switch ( $_REQUEST['q'] ) {
     // Title
     // ---------------------------------
 
-    # Replace Title with form to change title
+    // Replace Title with form to change title
     case 'e_name':
         $instructions = "You can change the name of the game or sub-thread.";
 
@@ -352,7 +352,7 @@ switch ( $_REQUEST['q'] ) {
         ]);
     break;
     
-    # Change name and replace text with new name
+    // Change name and replace text with new name
     case 's_name':
         $title = safe_html($_REQUEST['title']);
         $game->set_title($title);
@@ -377,17 +377,34 @@ switch ( $_REQUEST['q'] ) {
     // ---------------------------------
 
     case 'e_complex':
-        print "Change the complexity of the game.<br />";
-        edit_complex($game_id);
-        break;
+        $instructions = "Change the complexity of the game.";
         
-        case 's_complex':
-        $sql = sprintf("update Games set complex=%s where id=%s",quote_smart($_REQUEST['complex']),quote_smart($game_id));
-        $result = mysql_query($sql);
+        $complexity = $game->get_complexity();
+        $complexityOptions = Game::COMPLEXITIES;
+
+        render_view('templates/game/edit_complexity', [
+            'instructions' => $instructions,
+            'complexityOptions' => $complexityOptions,
+            'game' => [
+                'complexity' => $complexity
+            ]
+        ]);
+    break;
+        
+    case 's_complex':
+        $complexity = $_REQUEST['complex'];
+
+        $game->set_complexity($complexity);
+
         $cache->clean('front-signup-' . $game_id);
         $cache->clean('front-signup-swf-' . $game_id);
         $cache->clean('front-signup-fast-' . $game_id);
-        print show_complex($_REQUEST['complex']);
+
+        render_view('templates/game/show_complexity', [
+            'game' => [
+                'complexity' => $complexity
+            ]
+        ]);
     break;
 
     // ---------------------------------

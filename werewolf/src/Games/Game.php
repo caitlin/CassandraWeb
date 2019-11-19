@@ -6,6 +6,7 @@ class Game
     // -------------------------------------------------------------------------
     const ALLOWED_FIELDS_FOR_OPTIONS = ['status', 'phase', 'deadline_speed'];
     const WINNERS = ['Evil','Good','Other'];
+    const COMPLEXITIES = ['Newbie','Low','Medium','High','Extreme'];
 
     public $id;
     private $thread_id;
@@ -68,6 +69,13 @@ class Game
                         WHERE id=%s",quote_smart($this->id));
         $result = mysql_query($sql);
 
+        return mysql_result($result,0,0);
+    }
+
+    public function get_complexity() {
+        $sql = sprintf("select complex from Games where id=%s",quote_smart($this->id));
+        $result = mysql_query($sql);
+        
         return mysql_result($result,0,0);
     }
 
@@ -160,6 +168,12 @@ class Game
     }
 
     // Setters
+
+    public function set_complexity($complexity) {
+        $sql = sprintf("update Games set complex=%s where id=%s",quote_smart($complexity),quote_smart($this->id));
+        
+        return mysql_query($sql);
+    }
 
     public function set_description($description) {
         $new_description = safe_html($description,"<a>");
