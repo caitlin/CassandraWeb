@@ -411,19 +411,33 @@ switch ( $_REQUEST['q'] ) {
     // Max Players
     // ---------------------------------
 
-     # Show change Max Players Dialoge Box
+     // Show change Max Players Dialoge Box
      case 'e_maxplayers':
-        print "Change Max number of players.  If you make this number less than or equal to the number of people currently signed up then no more people can sign up via Cassandra.<br /><br />";
-        edit_maxplayers($game_id);
+        $instructions = "Change Max number of players.  If you make this number less than or equal to the number of people currently signed up then no more people can sign up via Cassandra.";
+        
+        $max_players = $game->get_max_players();
+
+        render_view('templates/game/edit_max_players', [
+            'instructions' => $instructions,
+            'game' => [
+                'max_players' => $max_players
+            ]
+        ]);
     break;
 
     case 's_maxplayers':
-        $sql = sprintf("update Games set max_players=%s where id=%s",quote_smart($_REQUEST['max_players']),quote_smart($game_id));
-        $result = mysql_query($sql);
+        $max_players = $_REQUEST['max_players'];
+        $game->set_max_players($max_players);
+
         $cache->clean('front-signup-' . $game_id);
         $cache->clean('front-signup-swf-' . $game_id);
         $cache->clean('front-signup-fast-' . $game_id);
-        print "<div onMouseOver='show_hint(\"Click to Change Max Players\")' onMouseOut='hide_hint()' onClick='edit_maxplayers()'>".$_REQUEST['max_players']."</div>";
+
+        render_view('templates/game/show_max_players', [
+            'game' => [
+                'max_players' => $max_players
+            ]
+        ]);
     break;
 
     // ---------------------------------

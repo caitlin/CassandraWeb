@@ -101,6 +101,13 @@ class Game
         }
     }
 
+    public function get_max_players() {
+        $sql = sprintf("select max_players from Games where id=%s",quote_smart($this->id));
+        $result = mysql_query($sql);
+
+        return mysql_result($result,0,0);
+    }
+
     public function get_moderators() {
         $sql = sprintf("SELECT Moderators.user_id AS id, Users.name AS name FROM Users, Moderators WHERE Moderators.user_id=Users.id AND Moderators.game_id=%s ORDER BY name",quote_smart($this->id));
         $result = mysql_query($sql);
@@ -204,6 +211,11 @@ class Game
         
         $sql = sprintf("UPDATE Games SET `lynch_time`=%s, `na_deadline`=%s, `day_length`=%s, `night_length`=%s WHERE id=%s",$dusk_value,$dawn_value,quote_smart($day_length),quote_smart($night_length),quote_smart($this->id));
         
+        return mysql_query($sql);
+    }
+
+    public function set_max_players($max_players) {
+        $sql = sprintf("update Games set max_players=%s where id=%s",quote_smart($max_players),quote_smart($this->id));
         return mysql_query($sql);
     }
 
