@@ -109,18 +109,6 @@ function show_subt($game_id) {
   print $output;
 }
 
-function edit_thread($game_id) {
-  $sql = sprintf("select thread_id from Games where id=%s",quote_smart($game_id));
-  $result = mysql_query($sql);
-  $thread_id = mysql_result($result,0,0);
-  $output = "<form name='new_thread'>\n";
-  $output .= "<input type='text' name='thread' value='$thread_id' />\n";
-  $output .= "<input type='button' name='submit' value='submit' onClick='submit_thread()' />\n";
-  $output .= "</form>\n";
-
-  print $output;
-}
-
 function createPlayer_table($edit,$game_id) {
   global $here, $posts, $uid, $finished, $rep_id, $status, $open_comment, $close_comment;
   if ( $posts == "" ) { setPostsPath($game_id); }

@@ -149,17 +149,17 @@ class Game
         }
     }
 
-    public function get_title() {
-        $sql = sprintf("select title from Games where id=%s",quote_smart($this->id));
+    public function get_thread_id() {
+        $sql = sprintf("SELECT thread_id 
+                        FROM Games 
+                        WHERE id=%s",quote_smart($this->id));
         $result = mysql_query($sql);
 
         return mysql_result($result,0,0);
     }
 
-    public function get_thread_id() {
-        $sql = sprintf("SELECT thread_id 
-                        FROM Games 
-                        WHERE id=%s",quote_smart($this->id));
+    public function get_title() {
+        $sql = sprintf("select title from Games where id=%s",quote_smart($this->id));
         $result = mysql_query($sql);
 
         return mysql_result($result,0,0);
@@ -275,6 +275,11 @@ class Game
     public function set_status($status, $phase, $day) {
         $sql = sprintf("update Games set `status`=%s, phase=%s, day=%s where id=%s",quote_smart($status),quote_smart($phase),quote_smart($day),quote_smart($this->id));
         
+        return mysql_query($sql);
+    }
+
+    public function set_thread_id($thread_id) {
+        $sql = sprintf("UPDATE Games SET thread_id=%s WHERE id=%s",quote_smart($thread_id),quote_smart($this->id));
         return mysql_query($sql);
     }
 

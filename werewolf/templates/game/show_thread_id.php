@@ -1,0 +1,1 @@
+<div onMouseOver='show_hint(\"Click to change BGG Thread id\")' onMouseOut='hide_hint()' onClick='edit_thread()'><?php echo $game['thread_id']; ?></div>

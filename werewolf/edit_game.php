@@ -478,21 +478,37 @@ switch ( $_REQUEST['q'] ) {
     // Thread ID
     // ---------------------------------
 
-    # Replace Thread ID with form to change thread id
+    // Replace Thread ID with form to change thread id
     case 'e_thread':
-        print "You can change the BGG thread_id.  This should only be done when changing a game from a sign-up thread to a game thread.<br /><br />";
-        edit_thread($game_id);
+        $instructions = "You can change the BGG thread_id.  This should only be done when changing a game from a sign-up thread to a game thread.";
+        
+        $thread_id = $game->get_thread_id();
+
+        render_view('templates/game/edit_thread_id', [
+            'instructions' => $instructions,
+            'complexityOptions' => $complexityOptions,
+            'game' => [
+                'thread_id' => $thread_id
+            ]
+        ]);
     break;
     
-    # Change thread_id and replace text with new id
+    // Change thread_id and replace text with new id
     case 's_thread':
-        $sql = sprintf("update Games set thread_id=%s where id=%s",quote_smart($_REQUEST['thread_id']),quote_smart($game_id));
-        $result = mysql_query($sql);
+        $thread_id = $_REQUEST['thread_id'];
+        $game->set_thread_id($thread_id);
+        
         $cache->clean('front-signup-' . $game_id);
         $cache->clean('front-signup-swf-' . $game_id);
         $cache->clean('front-signup-fast-' . $game_id);
         $cache->remove('game-' . $game_id, 'front');
-        $output = "<div onMouseOver='show_hint(\"Click to change BGG Thread id\")' onMouseOut='hide_hint()' onClick='edit_thread()'>".$_REQUEST['thread_id']."</div>";
+        
+        render_view('templates/game/edit_thread_id', [
+            'instructions' => $instructions,
+            'game' => [
+                'thread_id' => $thread_id
+            ]
+        ]);
         
         print $output;
     break;
