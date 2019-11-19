@@ -109,18 +109,6 @@ function show_subt($game_id) {
   print $output;
 }
 
-function edit_name($game_id) {
-  $sql = sprintf("select title from Games where id=%s",quote_smart($game_id));
-  $result = mysql_query($sql);
-  $title = mysql_result($result,0,0);
-  $output = "<form name='new_title'>\n";
-  $output .= "<input type='text' name='title' value='$title' />\n";
-  $output .= "<input type='button' name='submit' value='submit' onClick='submit_name()'/>\n";
-  $output .= "</form>\n";
-
-  print $output;
-}
-
 function edit_thread($game_id) {
   $sql = sprintf("select thread_id from Games where id=%s",quote_smart($game_id));
   $result = mysql_query($sql);

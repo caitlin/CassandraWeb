@@ -55,6 +55,13 @@ class Game
     
     // Getters
 
+    public function get_number() {
+        $sql = "select number from Games where id='$this->id'";
+        $result = mysql_query($sql);
+        
+        return mysql_result($result,0,0);
+    }
+
     public function get_thread_id() {
         $sql = sprintf("SELECT thread_id 
                         FROM Games 
@@ -136,7 +143,14 @@ class Game
         return mysql_fetch_array($result);
     }
 
-    public function get_winner () {
+    public function get_title() {
+        $sql = sprintf("select title from Games where id=%s",quote_smart($this->id));
+        $result = mysql_query($sql);
+
+        return mysql_result($result,0,0);
+    }
+
+    public function get_winner() {
         $sql=sprintf("select winner from Games where id=%s",quote_smart($this->id));
         $result = mysql_query($sql);
 
@@ -234,6 +248,12 @@ class Game
     public function set_dates($start_timestamp, $end_timestamp, $swf) {
         $sql = sprintf("UPDATE Games SET start_date=%s, end_date=%s, swf=%s WHERE id=%s",
                         quote_smart($start_timestamp),quote_smart($end_timestamp),quote_smart($swf),quote_smart($this->id));
+
+        return mysql_query($sql);
+    }
+
+    public function set_title($title) {
+        $sql = sprintf("update Games set title=%s where id=%s",quote_smart($title),quote_smart($this->id));
 
         return mysql_query($sql);
     }

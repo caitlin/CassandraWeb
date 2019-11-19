@@ -340,28 +340,36 @@ switch ( $_REQUEST['q'] ) {
 
     # Replace Title with form to change title
     case 'e_name':
-        print "You can change the name of the game or sub-thread.<br /><br />";
-        edit_name($game_id);
+        $instructions = "You can change the name of the game or sub-thread.";
+
+        $title = $game->get_title();
+
+        render_view('templates/game/edit_title', [
+            'instructions' => $instructions,
+            'game' => [
+                'title' => $title
+            ]
+        ]);
     break;
     
     # Change name and replace text with new name
     case 's_name':
-        $_REQUEST['title'] = safe_html($_REQUEST['title']);
-        $sql = sprintf("update Games set title=%s where id=%s",quote_smart($_REQUEST['title']),quote_smart($game_id));
-        $result = mysql_query($sql);
+        $title = safe_html($_REQUEST['title']);
+        $game->set_title($title);
+
         $cache->clean('front-signup-' . $game_id);
         $cache->clean('front-signup-swf-' . $game_id);
         $cache->clean('front-signup-fast-' . $game_id);
         $cache->remove('game-' . $game_id, 'front');
         
-        $sql = "select number, title from Games where id='$game_id'";
-        $result = mysql_query($sql);
-        $game = mysql_fetch_array($result);
-        $output = "";
-        if ( $game['number'] != "" ) { $output .= $game['number'].") "; }
-        $output .= $_REQUEST['title'];
-        
-        print $output;
+        $number = $game->get_number();
+
+        render_view('templates/game/show_title', [
+            'game' => [
+                'title' => $title,
+                'number' => $number
+            ]
+        ]);
     break;
 
     // ---------------------------------
