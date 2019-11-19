@@ -1,3 +1,4 @@
+<p><?php echo $instructions ?></p>
 <form name='change_mod'>
     <select name='moderator[]' size='25' multiple>
         <?php foreach ( $users as $user_id=>$user_name ) { ?>

@@ -1,3 +1,4 @@
+<p><?php echo $instructions ?></p>
 <form name='new_deadline'>
     <table>
         <?php if ( $game['speed'] == "Standard" ) { ?>

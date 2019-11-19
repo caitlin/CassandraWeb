@@ -1,3 +1,4 @@
+<p><?php echo $instructions ?></p>
 <form name='new_winner'>
     <select name='winner'>
         <option value=''></option>
