@@ -58,14 +58,14 @@ function edit_dates() {
 }
 
 function submit_dates() {
-    s_date = document.edit_date.start.value
+    s_date = document.edit_date.start_date.value
     if ( ! isDate(s_date, "yyyy-MM-dd") ) {
         alert ("Start date is not a valid sql date.\nyyyy-mm-dd")
         hide_busy()
         return false
     }
     stime = document.edit_date.start_time.value
-    e_date = document.edit_date.end.value
+    e_date = document.edit_date.end_date.value
     if ( e_date != "" && e_date != "0000-00-00" && !isDate(e_date, "yyyy-MM-dd") ) {
         alert ("End date is not a valid sql date.\nyyyy-mm-dd")
         hide_busy()

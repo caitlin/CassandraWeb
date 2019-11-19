@@ -61,35 +61,6 @@ function show_dates($game_id) {
   print $output;
 }
 
-function edit_dates($game_id) {
-  $format = "'%Y-%m-%d'";
-  $format2 = "'%H:%i'";
-  $output = "<form name='edit_date'>\n";
-  $sql = sprintf("select date_format(start_date, %s) as start, date_format(start_date, %s) as start_time, date_format(end_date, %s) as end, swf, status, deadline_speed from Games where id=%s", $format,$format2,$format,quote_smart($game_id));
-  $result = mysql_query($sql);
-  $date = mysql_fetch_array($result);
-  $checked = "";
-  $value = $date['swf'];
-  if ( $date['swf'] == "Yes" ) { $checked = "checked='checked'"; }
-  if ( $date['status'] == "Sign-up") {
-    $output .= "<input type='checkbox' name='swf' value='No' $checked /> Starts when full<br />\n";
-  } else {
-    $output .= "<input type='hidden' name='swf' value='$value' />\n";
-  }
-  $output .= "<input type=text name='start' value='".$date['start']."' />";
-  if ( $date['deadline_speed'] == "Fast" ) { 
-    $output .= time_dropdown('start_time',$date['start_time'],false,false); 
-  } else {
-    $output .= "<input type='hidden' name='start_time' value='00:00' />\n";
-  }
-  $output .= " to ";
-  $output .= "<input type=text name='end' value='".$date['end']."' />\n";
-  $output .= "<br /><input type='button' name='submit' value='submit' onClick='submit_dates()'/>\n";
-  $output .= "</form>";
-
-  print $output;
-}
-
 function edit_speed($game_id) {
   $output = "<form name='new_speed'>\n";
   $output .= "<select name='speed'>\n";

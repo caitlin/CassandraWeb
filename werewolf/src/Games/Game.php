@@ -127,6 +127,15 @@ class Game
         return $ids;
     }
 
+    public function get_dates() {
+        $date_format = "'%Y-%m-%d'";
+        $time_format = "'%H:%i'";
+        $sql = sprintf("select date_format(start_date, %s) as start_date, date_format(start_date, %s) as start_time, date_format(end_date, %s) as end_date, swf, status, deadline_speed from Games where id=%s", $date_format,$time_format,$date_format,quote_smart($this->id));
+        $result = mysql_query($sql);
+
+        return mysql_fetch_array($result);
+    }
+
     public function get_winner () {
         $sql=sprintf("select winner from Games where id=%s",quote_smart($this->id));
         $result = mysql_query($sql);
@@ -220,6 +229,13 @@ class Game
             }
         }
         return true;
+    }
+
+    public function set_dates($start_timestamp, $end_timestamp, $swf) {
+        $sql = sprintf("UPDATE Games SET start_date=%s, end_date=%s, swf=%s WHERE id=%s",
+                        quote_smart($start_timestamp),quote_smart($end_timestamp),quote_smart($swf),quote_smart($this->id));
+
+        return mysql_query($sql);
     }
 
     public function set_winner($winner) {

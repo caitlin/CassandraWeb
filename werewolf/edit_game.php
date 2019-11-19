@@ -77,29 +77,45 @@ switch ( $_REQUEST['q'] ) {
         ]);
     break;
 
-# Replace text with form to edit_dates.
-case 'e_date':
-print "Edit the start and end dates.<br /><br />";
-edit_dates($game_id);
-break;
+    // ---------------------------------
+    // Date
+    // ---------------------------------
 
-# Edit database with new Dates and return text to original.
-case 's_date':
-if ( isset($_REQUEST['speed']) ) {
+    // Replace text with form to edit_dates.
+    case 'e_date':
+        $instructions = "Edit the start and end dates.";
 
-} else {
-  $start = $_REQUEST['sdate']." ".$_REQUEST['stime'];
-  $sql = sprintf("update Games set start_date=%s, end_date=%s, swf=%s where id=%s",quote_smart($start),quote_smart($_REQUEST['edate']),quote_smart($_REQUEST['swf']),quote_smart($game_id));
-$result = mysql_query($sql);
-}
-$cache->remove('games-signup-fast-list', 'front');
-$cache->remove('games-signup-swf-list', 'front');
-$cache->remove('games-signup-list', 'front');
-$cache->clean('front-signup-' . $game_id);
-$cache->clean('front-signup-swf-' . $game_id);
-$cache->clean('front-signup-fast-' . $game_id);
-show_dates($game_id);
-break;
+        $dates = $game->get_dates();
+
+        render_view('templates/game/edit_dates', [
+            'instructions' => $instructions,
+            'game' => $dates
+        ]);
+    break;
+
+    // Edit database with new Dates and return text to original.
+    case 's_date':
+        if ( !isset($_REQUEST['speed']) ) {
+            $start_timestamp = $_REQUEST['sdate']." ".$_REQUEST['stime'];
+            $end_timestamp = $_REQUEST['edate'];
+            $swf = $_REQUEST['swf'];
+            $game->set_dates($start_timestamp, $end_timestamp, $swf);
+        }
+
+        $cache->remove('games-signup-fast-list', 'front');
+        $cache->remove('games-signup-swf-list', 'front');
+        $cache->remove('games-signup-list', 'front');
+        $cache->clean('front-signup-' . $game_id);
+        $cache->clean('front-signup-swf-' . $game_id);
+        $cache->clean('front-signup-fast-' . $game_id);
+
+        $dates = $game->get_dates();
+
+        render_view('templates/game/show_dates', [
+            'instructions' => $instructions,
+            'game' => $dates
+        ]);
+    break;
 
     // ---------------------------------
     // Description
