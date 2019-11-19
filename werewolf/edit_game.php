@@ -154,7 +154,7 @@ switch ( $_REQUEST['q'] ) {
     case 'e_status':
         $instructions = "Change the status of the game.  In-Progress means that the players can only see their own roles, and that nobody can see any of the comments below.  Once you set the game to 'Finished' then everyone will be able to see everything.  When you set a game to 'Finished' please don't forget to set the winner.  If you are using the Automatied vote tally system there should be no need to manually change the period or number.";
 
-        $full_status = $game->get_full_status();
+        $full_status = $game->get_status();
         $statusOptions = Game::field_options_for('status');
         $phaseOptions = Game::field_options_for('phase');
 
@@ -173,7 +173,7 @@ switch ( $_REQUEST['q'] ) {
         $phase = $_REQUEST['phase'];
         $day = $_REQUEST['day'];
 
-        $game->set_full_status($status, $phase, $day);
+        $game->set_status($status, $phase, $day);
 
         if($status == 'In Progress') {
             $cache->remove('total-games', 'front');
@@ -211,7 +211,7 @@ switch ( $_REQUEST['q'] ) {
     case 'e_speed':
         $instructions = "Change the speed of the game.";
 
-        $speed = $game->get_deadline_speed();
+        $speed = $game->get_speed();
         $speedOptions = Game::field_options_for('deadline_speed');
 
         render_view('templates/game/edit_speed', [

@@ -119,7 +119,7 @@ class Game
         return mysql_result($result,0,0);
     }
 
-    public function get_deadline_speed() {
+    public function get_speed() {
         $sql=sprintf("select deadline_speed from Games where id=%s",quote_smart($this->id));
         $result = mysql_query($sql);
 
@@ -129,7 +129,7 @@ class Game
     }
 
     // Status has three parts: status, phase, day
-    public function get_full_status() {
+    public function get_status() {
         $sql=sprintf("select status, phase, day from Games where id=%s",quote_smart($this->id));
         $result = mysql_query($sql);
 
@@ -260,7 +260,7 @@ class Game
         return mysql_query($sql);
     }
 
-    public function set_full_status($status, $phase, $day) {
+    public function set_status($status, $phase, $day) {
         $sql = sprintf("update Games set `status`=%s, phase=%s, day=%s where id=%s",quote_smart($status),quote_smart($phase),quote_smart($day),quote_smart($this->id));
         
         return mysql_query($sql);
