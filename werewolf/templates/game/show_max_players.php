@@ -1,1 +1,1 @@
-<div onMouseOver='show_hint(\"Click to Change Max Players\")' onMouseOut='hide_hint()' onClick='edit_maxplayers()'><?php echo $game['max_players'] ?></div>
+<div onMouseOver='show_hint("Click to Change Max Players")' onMouseOut='hide_hint()' onClick='edit_maxplayers()'><?php echo $game['max_players'] ?></div>

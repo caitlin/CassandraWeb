@@ -5,4 +5,4 @@ if ( $game['status'] == "Sign-up" ) {
     if ( $game['swf'] == "Yes" ) {  $content = "Starts When Full"; }
 }
 ?>
-<div onMouseOver='show_hint(\"Click to Edit Dates\")' onMouseOut='hide_hint()' onClick='edit_dates()'><?php echo $content ?></div>
+<div onMouseOver='show_hint("Click to Edit Dates")' onMouseOut='hide_hint()' onClick='edit_dates()'><?php echo $content ?></div>

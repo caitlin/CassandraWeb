@@ -4,7 +4,7 @@
     list($day_length,$dlmin,$x) = split(":",$game['day_length']);
     list($night_length,$nlmin,$x) = split(":",$game['night_length']);
 ?>
-<div onMouseOver='show_hint(\"Click to Change Deadlines\")' onMouseOut='hide_hint()' onClick='edit_deadline()'>
+<div onMouseOver='show_hint("Click to Change Deadlines")' onMouseOut='hide_hint()' onClick='edit_deadline()'>
     <?php if ( $game['deadline_speed'] == "Standard" ) { ?>
         <?php if ( $dusk != "" ) { ?>
             Dusk: <?php echo time_24($dusk,$lmin) ?> BGG<br />
