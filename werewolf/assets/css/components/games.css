@@ -18,8 +18,13 @@
 
 
 .game-details {
-  display: grid;
+  /* display: grid;
   grid-template-columns: 1fr 1fr;
-  grid-column-gap: 30px;
+  grid-column-gap: 30px; */
   margin-bottom: 15px;
+}
+
+#player_table {
+    /* create horizontal scrollbar when it doesn't fit */
+    overflow-x: auto;
 }

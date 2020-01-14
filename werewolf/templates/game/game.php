@@ -1,44 +1,45 @@
 <html>
 <head>
 <title><?=$game['title'];?></title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <link rel='stylesheet' type='text/css' href='/assets/css/application.css'>
 <link rel='stylesheet' type='text/css' href='/assets/css/hint.css'>
 <script language='javascript'>
-<!--
-var thread_id = '<?=$game_thread_id;?>'
-var game_id = '<?=$game['id'];?>'
-var myURL = '<?=$_SERVER['REQUEST_URI'];?>'
-var currentStatus = '<?=$game['status'];?>'
+    <!--
+    var thread_id = '<?=$game_thread_id;?>'
+    var game_id = '<?=$game['id'];?>'
+    var myURL = '<?=$_SERVER['REQUEST_URI'];?>'
+    var currentStatus = '<?=$game['status'];?>'
 
-var xmlHttp
-var element
-if ( myURL == "/game/"+thread_id) {
-  var dir = "../"
-} else {
-  var dir = ""
-}
+    var xmlHttp
+    var element
+    if ( myURL == "/game/"+thread_id) {
+    var dir = "../"
+    } else {
+    var dir = ""
+    }
 
-function close(element) {
-  document.getElementById(element).style.visibility='hidden'
-}
+    function close(element) {
+    document.getElementById(element).style.visibility='hidden'
+    }
 
-function pm_players() {
-element="PM_div"
-document.getElementById(element).style.visibility='visible'
-var url=dir+"pm_players.php?game_id="+game_id
-xmlHttp=GetXmlHttpObject(stateChanged)
-xmlHttp.open("GET", url , false)
-xmlHttp.send(null)
-}
+    function pm_players() {
+        element="PM_div"
+        document.getElementById(element).style.visibility='visible'
+        var url=dir+"pm_players.php?game_id="+game_id
+        xmlHttp=GetXmlHttpObject(stateChanged)
+        xmlHttp.open("GET", url , false)
+        xmlHttp.send(null)
+    }
 
-function go_replace(user_id, action) {
-  sure = confirm("Are you sure?")
-  if ( sure ) {
-    location.href="/replace.php?user_id="+user_id+"&game_id="+game_id+"&action="+action
-  }
-}
+    function go_replace(user_id, action) {
+    sure = confirm("Are you sure?")
+    if ( sure ) {
+        location.href="/replace.php?user_id="+user_id+"&game_id="+game_id+"&action="+action
+    }
+    }
 
-//-->
+    //-->
 </script>
 <script src='/assets/js/hint.js'></script>
 <?php
